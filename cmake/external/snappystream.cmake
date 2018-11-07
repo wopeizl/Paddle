@@ -24,18 +24,30 @@ set(SNAPPYSTREAM_SOURCES_DIR ${THIRD_PARTY_PATH}/snappy_stream)
 set(SNAPPYSTREAM_INSTALL_DIR ${THIRD_PARTY_PATH}/install/snappy_stream)
 set(SNAPPYSTREAM_INCLUDE_DIR "${SNAPPYSTREAM_INSTALL_DIR}/include" CACHE PATH "snappy stream include directory." FORCE)
 
-set(SNAPPYSTREAM_LIBRARIES "${SNAPPYSTREAM_INSTALL_DIR}/lib/libsnappystream.a")
-
+# Fix me, VS2015 come without VLA support
+if(WIN32)
+    set(SNAPPYSTREAM_LIBRARIES "${SNAPPYSTREAM_INSTALL_DIR}/lib/snappystream.lib")
+    set(snappystream_git "https://github.com/wopeizl/snappystream.git")
+    set(snappystream_gittag "cad8a5d29977f5f5a0e9dbed104dab620b45efb1")
+else(WIN32)
+    set(SNAPPYSTREAM_LIBRARIES "${SNAPPYSTREAM_INSTALL_DIR}/lib/libsnappystream.a")
+    set(snappystream_git "https://github.com/hoxnox/snappystream.git")
+    set(snappystream_gittag "0.2.8")
+endif(WIN32)
 ExternalProject_Add(
         extern_snappystream
-        GIT_REPOSITORY "https://github.com/hoxnox/snappystream.git"
-        GIT_TAG "0.2.8"
+        GIT_REPOSITORY  ${snappystream_git}
+        GIT_TAG         ${snappystream_gittag}
         PREFIX          ${SNAPPYSTREAM_SOURCES_DIR}
         UPDATE_COMMAND  ""
         CMAKE_ARGS      -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
                         -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
-                        -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
                         -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
+                        -DCMAKE_C_FLAGS_DEBUG=${DCMAKE_C_FLAGS_DEBUG}
+                        -DCMAKE_C_FLAGS_RELEASE=${DCMAKE_C_FLAGS_RELEASE}
+                        -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
+                        -DCMAKE_CXX_FLAGS_RELEASE=${CMAKE_CXX_FLAGS_RELEASE}
+                        -DCMAKE_CXX_FLAGS_DEBUG=${CMAKE_CXX_FLAGS_DEBUG}
                         -DCMAKE_INSTALL_PREFIX=${SNAPPY_INSTALL_DIR}
                         -DCMAKE_INSTALL_LIBDIR=${SNAPPY_INSTALL_DIR}/lib
                         -DCMAKE_POSITION_INDEPENDENT_CODE=ON

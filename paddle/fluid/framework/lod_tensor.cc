@@ -26,10 +26,8 @@ limitations under the License. */
 #include "paddle/fluid/memory/memcpy.h"
 #include "paddle/fluid/memory/memory.h"
 
-#if !defined(_WIN32)
 #include "paddle/fluid/recordio/scanner.h"
 #include "paddle/fluid/recordio/writer.h"
-#endif  // _WIN32
 
 namespace paddle {
 namespace framework {
