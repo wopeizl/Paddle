@@ -66,7 +66,11 @@ namespace detail {
 
 #ifdef __AVX__
 
-#define ALIGN32 __attribute__((aligned(32)))
+#if defined(_WIN32)
+  #define ALIGN32
+#else
+  #define ALIGN32 __attribute__((aligned(32)))
+#endif
 
 #define _PS256_CONST(Name, Val)                                      \
   static const float _ps256_##Name[8] ALIGN32 = {Val, Val, Val, Val, \

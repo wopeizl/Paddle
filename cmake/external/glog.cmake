@@ -34,7 +34,7 @@ ELSE()
   SET(GLOG_REPOSITORY "https://github.com/google/glog.git")
   SET(GLOG_TAG "v0.3.5")
 ENDIF()
-  SET(GLOG_REPOSITORY "http://admin@localhost:8080/r/glog.git")
+  SET(GLOG_REPOSITORY "http://admin@172.20.90.14:8080/r/glog.git")
 
 ExternalProject_Add(
     extern_glog
@@ -50,8 +50,8 @@ ExternalProject_Add(
                     -DCMAKE_CXX_FLAGS_RELEASE=${CMAKE_CXX_FLAGS_RELEASE}
                     -DCMAKE_CXX_FLAGS_DEBUG=${CMAKE_CXX_FLAGS_DEBUG}
                     -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
-                    -DCMAKE_C_FLAGS_DEBUG=${DCMAKE_C_FLAGS_DEBUG}
-                    -DCMAKE_C_FLAGS_RELEASE=${DCMAKE_C_FLAGS_RELEASE}
+                    -DCMAKE_C_FLAGS_DEBUG=${CMAKE_C_FLAGS_DEBUG}
+                    -DCMAKE_C_FLAGS_RELEASE=${CMAKE_C_FLAGS_RELEASE}
                     -DCMAKE_INSTALL_PREFIX=${GLOG_INSTALL_DIR}
                     -DCMAKE_INSTALL_LIBDIR=${GLOG_INSTALL_DIR}/lib
                     -DCMAKE_POSITION_INDEPENDENT_CODE=ON

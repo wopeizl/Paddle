@@ -83,15 +83,25 @@ function(op_library TARGET)
         message(FATAL_ERROR "The op library ${TARGET} should contains at least one .cc file")
     endif()
     if (WIN32)
-    # remove windows unsupported op, because windows has no nccl, no warpctc such ops.
-    foreach(windows_unsupport_op "nccl_op" "gen_nccl_id_op" "warpctc_op" "hierarchical_sigmoid_op"
-     "crf_decoding_op" "select_op" "lstmp_op" "gru_op" "fusion_gru_op" "lstm_op" "fusion_lstm_op" "cumsum_op"
-      "fusion_seqconv_eltadd_relu_op" "channel_send_op" "channel_create_op" "channel_close_op" "channel_recv_op"
-            "fusion_seqexpand_concat_fc_op" "attention_lstm_op" "fused_embedding_fc_lstm_op" "fc_op")
-        if ("${TARGET}" STREQUAL "${windows_unsupport_op}")
-          return()
-        endif()
-    endforeach()
+        # remove windows unsupported op, because windows has no nccl, no warpctc such ops.
+        foreach(windows_unsupport_op "nccl_op" "gen_nccl_id_op" "warpctc_op" "hierarchical_sigmoid_op"
+                "channel_send_op" "channel_create_op" "channel_close_op" "channel_recv_op"  "fusion_lstm_op"
+                "crf_decoding_op" )
+            if ("${TARGET}" STREQUAL "${windows_unsupport_op}")
+                return()
+            endif()
+        endforeach()
+
+#        if(WITH_GPU)
+            # remove windows GPU unsupported op, because windows has no nccl, no warpctc such ops.
+            foreach(windows_unsupport_gpu_op "select_op" "lstmp_op" "gru_op" "fusion_gru_op"
+                    "lstm_op" "cumsum_op" "fusion_seqconv_eltadd_relu_op"
+                    "fusion_seqexpand_concat_fc_op" "attention_lstm_op" "fused_embedding_fc_lstm_op" "fc_op")
+                if ("${TARGET}" STREQUAL "${windows_unsupport_gpu_op}")
+                    return()
+                endif()
+            endforeach()
+#        endif(WITH_GPU)
     endif(WIN32)
     set(OP_LIBRARY ${TARGET} ${OP_LIBRARY} PARENT_SCOPE)
 
@@ -302,10 +312,10 @@ op_library(flatten_op DEPS reshape_op)
 op_library(sequence_pad_op DEPS sequence_padding)
 op_library(unstack_op DEPS stack_op)
 op_library(fake_quantize_op DEPS memory)
-if (NOT WIN32)
-op_library(crf_decoding_op DEPS jit_kernel)
-op_library(fusion_lstm_op DEPS jit_kernel)
-endif(NOT WIN32)
+if(NOT WIN32)
+    op_library(crf_decoding_op DEPS jit_kernel)
+    op_library(fusion_lstm_op DEPS jit_kernel)
+endif()
 if (WITH_GPU)
     op_library(conv_op DEPS vol2col depthwise_conv im2col)
     op_library(layer_norm_op DEPS cub)
@@ -330,9 +340,7 @@ foreach(src ${GENERAL_OPS})
 endforeach()
 
 file(APPEND ${pybind_file} "USE_OP(less_than);\nUSE_OP(logical_and);\nUSE_NO_KERNEL_OP(read_from_array);\n")
-if (NOT WIN32)
 add_subdirectory(reader)
-endif(NOT WIN32)
 foreach(src ${READER_LIBRARY})
     set(OP_LIBRARY ${src} ${OP_LIBRARY})
 endforeach()

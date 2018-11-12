@@ -337,6 +337,7 @@ def embedding(input,
 
 
 if os.name != 'nt':
+
     @templatedoc(op_type="lstm")
     def dynamic_lstm(input,
                      size,
@@ -927,6 +928,7 @@ def linear_chain_crf(input, label, param_attr=None):
 
 
 if os.name != 'nt':
+
     @templatedoc()
     def crf_decoding(input, param_attr, label=None):
         """
@@ -954,9 +956,11 @@ if os.name != 'nt':
             dtype=helper.input_dtype())
         helper.append_op(
             type='crf_decoding',
-            inputs={"Emission": [input],
-                    "Transition": transition,
-                    "Label": label},
+            inputs={
+                "Emission": [input],
+                "Transition": transition,
+                "Label": label
+            },
             outputs={"ViterbiPath": [viterbi_path]})
 
         return viterbi_path

@@ -29,7 +29,7 @@ ExternalProject_Add(
     extern_gflags
     ${EXTERNAL_PROJECT_LOG_ARGS}
 #    GIT_REPOSITORY  "https://github.com/gflags/gflags.git"
-    GIT_REPOSITORY  "http://admin@localhost:8080/r/gflags.git"
+    GIT_REPOSITORY  "http://admin@172.20.90.14:8080/r/gflags.git"
 #    GIT_TAG         77592648e3f3be87d6c7123eb81cbad75f9aef5a
     PREFIX          ${GFLAGS_SOURCES_DIR}
     UPDATE_COMMAND  ""
@@ -39,8 +39,8 @@ ExternalProject_Add(
                     -DCMAKE_CXX_FLAGS_RELEASE=${CMAKE_CXX_FLAGS_RELEASE}
                     -DCMAKE_CXX_FLAGS_DEBUG=${CMAKE_CXX_FLAGS_DEBUG}
                     -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
-                    -DCMAKE_C_FLAGS_DEBUG=${DCMAKE_C_FLAGS_DEBUG}
-                    -DCMAKE_C_FLAGS_RELEASE=${DCMAKE_C_FLAGS_RELEASE}
+                    -DCMAKE_C_FLAGS_DEBUG=${CMAKE_C_FLAGS_DEBUG}
+                    -DCMAKE_C_FLAGS_RELEASE=${CMAKE_C_FLAGS_RELEASE}
                     -DBUILD_STATIC_LIBS=ON
                     -DCMAKE_INSTALL_PREFIX=${GFLAGS_INSTALL_DIR}
                     -DCMAKE_POSITION_INDEPENDENT_CODE=ON
