@@ -44,9 +44,9 @@ limitations under the License. */
 #include <boost/variant.hpp>
 
 // some platform-independent defintion
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
-#define __UNUSED__()
+#if defined(_WIN32)
+#define UNUSED
 #define __builtin_expect(EXP, C)  (EXP)
 #else
-#define __UNUSED__() __attribute__((unused))
+#define UNUSED __attribute__((unused))
 #endif

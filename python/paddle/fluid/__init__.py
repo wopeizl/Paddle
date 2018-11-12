@@ -35,6 +35,7 @@ from . import regularizer
 from . import average
 from . import metrics
 from . import transpiler
+from . import distribute_lookup_table
 from .param_attr import ParamAttr, WeightNormParamAttr
 from .data_feeder import DataFeeder
 from .core import LoDTensor, LoDTensorArray, CPUPlace, CUDAPlace, CUDAPinnedPlace, Scope
@@ -54,7 +55,7 @@ Tensor = LoDTensor
 
 __all__ = framework.__all__ + executor.__all__ + \
     trainer.__all__ + inferencer.__all__ + transpiler.__all__ + \
-    lod_tensor.__all__ + [
+    parallel_executor.__all__ + lod_tensor.__all__ + [
         'io',
         'initializer',
         'layers',
@@ -80,8 +81,7 @@ __all__ = framework.__all__ + executor.__all__ + \
         'recordio_writer',
         'Scope',
     ]
-if os.name != 'nt':
-    __all__ += parallel_executor.__all__
+
 
 def __bootstrap__():
     """
@@ -113,11 +113,10 @@ def __bootstrap__():
     os.environ['OMP_NUM_THREADS'] = str(num_threads)
 
     read_env_flags = [
-        'use_pinned_memory', 'check_nan_inf', 'benchmark',
-        'eager_delete_scope', 'use_mkldnn', 'initial_cpu_memory_in_mb',
-        'init_allocated_mem', 'free_idle_memory', 'paddle_num_threads',
-        'dist_threadpool_size', 'eager_delete_tensor_gb',
-        'reader_queue_speed_test_mode'
+        'use_pinned_memory', 'check_nan_inf', 'benchmark', 'eager_delete_scope',
+        'use_mkldnn', 'initial_cpu_memory_in_mb', 'init_allocated_mem',
+        'free_idle_memory', 'paddle_num_threads', 'dist_threadpool_size',
+        'eager_delete_tensor_gb', 'reader_queue_speed_test_mode'
     ]
     if os.name != 'nt':
         read_env_flags.append('warpctc_dir')
@@ -125,7 +124,6 @@ def __bootstrap__():
 
     if core.is_compiled_with_dist():
         read_env_flags.append('rpc_deadline')
-        read_env_flags.append('rpc_server_profile_period')
         read_env_flags.append('rpc_server_profile_path')
         read_env_flags.append('enable_rpc_profiler')
         read_env_flags.append('rpc_send_thread_num')
@@ -134,7 +132,8 @@ def __bootstrap__():
 
     if core.is_compiled_with_cuda():
         read_env_flags += [
-            'fraction_of_gpu_memory_to_use', 'cudnn_deterministic'
+            'fraction_of_gpu_memory_to_use', 'cudnn_deterministic',
+            'conv_workspace_size_limit', 'cudnn_exhaustive_search'
         ]
     core.init_gflags([sys.argv[0]] +
                      ["--tryfromenv=" + ",".join(read_env_flags)])

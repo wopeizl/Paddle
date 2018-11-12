@@ -121,6 +121,7 @@ macro(PROMPT_PROTOBUF_LIB)
     # FIND_Protobuf.cmake uses `Protobuf_PROTOC_EXECUTABLE`.
     # make `protobuf_generate_cpp` happy.
     SET(Protobuf_PROTOC_EXECUTABLE ${PROTOBUF_PROTOC_EXECUTABLE})
+
     FOREACH(dep ${protobuf_DEPS})
         ADD_DEPENDENCIES(protobuf ${dep})
         ADD_DEPENDENCIES(protobuf_lite ${dep})

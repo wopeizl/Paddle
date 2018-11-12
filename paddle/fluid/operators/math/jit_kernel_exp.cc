@@ -254,7 +254,7 @@ INTRI16_FLOAT(jit::avx512f, detail::ExpAVX2);
 #undef MKL_FLOAT
 #undef MKL_DOUBLE
 
-REGISTER_JITKERNEL(vexp, VExpKernel);
+REGISTER_JITKERNEL_DEPRECATED(vexp, VExpKernel);
 
 /* VSigmoid JitKernel */
 template <typename T, jit::cpu_isa_t isa, jit_block>
@@ -400,7 +400,7 @@ INTRI16_FLOAT(jit::avx512f, detail::ExpAVX2);
 #undef INTRI_GT16_FLOAT
 #undef INTRI_VSIGMOID
 
-REGISTER_JITKERNEL(vsigmoid, VSigmoidKernel);
+REGISTER_JITKERNEL_DEPRECATED(vsigmoid, VSigmoidKernel);
 
 /* VTanh JitKernel */
 template <typename T, jit::cpu_isa_t isa, jit_block>
@@ -413,10 +413,11 @@ class VTanhKernelImpl : public VTanhKernel<T> {
     vaddbias_ = KernelPool::Instance().template Get<VAddBiasKernel<T>>(d);
   }
   void Compute(const T* x, T* y) const override {
-    vscal_->Compute(static_cast<T>(2), x, y);
+    const T a = static_cast<T>(2), b = static_cast<T>(-1);
+    vscal_->Compute(&a, x, y, this->num_);
     vsigmoid_->Compute(y, y);
-    vscal_->Compute(static_cast<T>(2), y);
-    vaddbias_->Compute(static_cast<T>(-1), y, y);
+    vscal_->Compute(&a, y, y, this->num_);
+    vaddbias_->Compute(&b, y, y, this->num_);
   }
 
  private:
@@ -476,10 +477,11 @@ class VTanhKernelImpl : public VTanhKernel<T> {
     _mm256_storeu_ps(y, tmp);                                                 \
     x += AVX_FLOAT_BLOCK;                                                     \
     y += AVX_FLOAT_BLOCK;                                                     \
-    vscal_->Compute(2.f, x, y);                                               \
+    const float a = 2.f, b = -1.f;                                            \
+    vscal_->Compute(&a, x, y, this->num_);                                    \
     vsigmoid_->Compute(y, y);                                                 \
-    vscal_->Compute(2.f, y);                                                  \
-    vaddbias_->Compute(-1.f, y, y);                                           \
+    vscal_->Compute(&a, y, y, this->num_);                                    \
+    vaddbias_->Compute(&b, y, y, this->num_);                                 \
   }
 
 #define INTRI_GT16_FLOAT(isa, expisa)                                         \
@@ -506,10 +508,11 @@ class VTanhKernelImpl : public VTanhKernel<T> {
     }                                                                         \
     x += this->end_;                                                          \
     y += this->end_;                                                          \
-    vscal_->Compute(2.f, x, y);                                               \
+    const float a = 2.f, b = -1.f;                                            \
+    vscal_->Compute(&a, x, y, this->num_);                                    \
     vsigmoid_->Compute(y, y);                                                 \
-    vscal_->Compute(2.f, y);                                                  \
-    vaddbias_->Compute(-1.f, y, y);                                           \
+    vscal_->Compute(&a, y, y, this->num_);                                    \
+    vaddbias_->Compute(&b, y, y, this->num_);                                 \
   }
 
 #ifndef __WIN32
@@ -537,7 +540,7 @@ INTRI16_FLOAT(jit::avx512f, detail::ExpAVX2);
 #undef INTRI_GT16_FLOAT
 #undef INTRI_VTANH
 
-REGISTER_JITKERNEL(vtanh, VTanhKernel);
+REGISTER_JITKERNEL_DEPRECATED(vtanh, VTanhKernel);
 
 #undef JITKERNEL_NEW_ACT_IMPL
 

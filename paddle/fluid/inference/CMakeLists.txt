@@ -1,3 +1,6 @@
+if(WITH_TESTING)
+  include(tests/test.cmake) # some generic cmake funtion for inference
+endif()
 # analysis and tensorrt must be added before creating static library,
 # otherwise, there would be undefined reference to them in static library.
 add_subdirectory(analysis)
@@ -14,6 +17,10 @@ cc_library(paddle_fluid_api
 
 get_property(fluid_modules GLOBAL PROPERTY FLUID_MODULES)
 get_property(cuda_modules GLOBAL PROPERTY CUDA_MODULES)
+get_property(fluid_third_partys GLOBAL PROPERTY FLUID_THRID_PARTYS)
+if (WIN32)
+list(APPEND fluid_third_partys gflags glog protobuf cblas)
+endif(WIN32)
 
 # paddle_fluid_origin exclude inference api interface
 if(WIN32)
@@ -57,6 +64,7 @@ endif()
 if(WIN32)
   sep_library(paddle_fluid_shared SHARED SRCS ${SHARED_INFERENCE_SRCS}
           DEPS ${fluid_modules} paddle_fluid_api reset_tensor_array)
+  target_link_libraries(paddle_fluid_shared shlwapi)
   if(WITH_GPU AND NOT WITH_DSO)
     target_link_libraries(paddle_fluid_origin ${cuda_modules})
   endif(WITH_GPU AND NOT WITH_DSO)

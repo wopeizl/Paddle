@@ -76,7 +76,7 @@ class Pass {
                    attr_name);
     attrs_[attr_name] = attr;
     attr_dels_[attr_name] = [attr, attr_name]() {
-      VLOG(3) << "deleting " << attr_name;
+      VLOG(30) << "deleting " << attr_name;
       delete attr;
     };
   }
@@ -207,7 +207,7 @@ struct PassRegistrar : public Registrar {
     return 0;                                                         \
   }                                                                   \
   static ::paddle::framework::ir::PassRegistrar<pass_class>           \
-      &__pass_tmp_registrar_##pass_type##__ __UNUSED__() = \
+      &__pass_tmp_registrar_##pass_type##__ UNUSED = \
           __pass_registrar_##pass_type##__
 
 #define USE_PASS(pass_type)                                           \
@@ -215,7 +215,7 @@ struct PassRegistrar : public Registrar {
       __use_pass_itself_##pass_type,                                  \
       "USE_PASS must be called in global namespace");                 \
   extern int TouchPassRegistrar_##pass_type();                        \
-  static int use_pass_itself_##pass_type##_ __UNUSED__() = \
+  static int use_pass_itself_##pass_type##_ UNUSED = \
       TouchPassRegistrar_##pass_type()
 
 }  // namespace ir

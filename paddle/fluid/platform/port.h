@@ -24,20 +24,15 @@
 #include "glog/logging.h"
 
 #if !defined(_WIN32)
-#define UNUSED __attribute__((unused))
 #include <dlfcn.h>     //  dladdr
 #include <execinfo.h>  // backtrace
 #include <sys/stat.h>
 #include <algorithm>  // std::accumulate
 #else
+#include <stdio.h>
 #include <io.h>  // _popen, _pclose
 #include <windows.h>
-#if defined(_WIN32)
 #include <numeric>  // std::accumulate in msvc
-#endif
-// windows version of __attribute__((unused))
-#define UNUSED __pragma(warning(suppress : 4100))
-
 #ifndef S_ISDIR  // windows port for sys/stat.h
 #define S_ISDIR(mode) (((mode)&S_IFMT) == S_IFDIR)
 #endif  // S_ISDIR

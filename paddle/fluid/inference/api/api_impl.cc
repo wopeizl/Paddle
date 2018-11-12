@@ -75,10 +75,6 @@ bool NativePaddlePredictor::Init(
   }
 #endif
 
-  // windows has no support for openblas multi-thread
-#ifdef _WIN32
-	FLAGS_paddle_num_threads = 1;
-#endif
   // no matter with or without MKLDNN
   paddle::platform::SetNumThreads(FLAGS_paddle_num_threads);
 
@@ -161,7 +157,7 @@ bool NativePaddlePredictor::Run(const std::vector<PaddleTensor> &inputs,
     LOG(ERROR) << "fail to get fetches";
     return false;
   }
-  VLOG(3) << "predict cost: " << timer.toc() << "ms";
+  VLOG(30) << "predict cost: " << timer.toc() << "ms";
 
   // Fix TensorArray reuse not cleaned bug.
   tensor_array_batch_cleaner_.CollectTensorArrays(scope_.get());
