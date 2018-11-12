@@ -33,9 +33,16 @@ class LoadCombineOp : public framework::OperatorBase {
     auto filename = Attr<std::string>("file_path");
     auto load_as_fp16 = Attr<bool>("load_as_fp16");
 
-    std::ifstream fin(filename);
-    PADDLE_ENFORCE(static_cast<bool>(fin),
-                   "Cannot open file %s for load_combine op", filename);
+    auto format = Attr<std::string>("format");
+    std::unique_ptr<std::ifstream> fin;
+    if (format == "windows") {
+      fin.reset(new std::ifstream(filename,
+                                  std::ios_base::in | std::ios_base::binary));
+    } else {
+      fin.reset(new std::ifstream(filename));
+    }
+    PADDLE_ENFORCE(static_cast<bool>(*fin),
+            "Cannot open file %s for load_combine op", filename);
 
     auto out_var_names = Outputs("Out");
     PADDLE_ENFORCE_GT(
@@ -54,11 +61,11 @@ class LoadCombineOp : public framework::OperatorBase {
       auto *tensor = out_var->GetMutable<framework::LoDTensor>();
 
       // Error checking
-      PADDLE_ENFORCE(static_cast<bool>(fin), "Cannot read more from file %s",
+      PADDLE_ENFORCE(static_cast<bool>(*fin), "Cannot read more from file %s",
                      filename);
 
       // Get data from fin to tensor
-      DeserializeFromStream(fin, tensor, dev_ctx);
+      DeserializeFromStream(*fin, tensor, dev_ctx);
 
       auto in_dtype = framework::ToDataType(tensor->type());
       auto out_dtype =

@@ -44,8 +44,8 @@ from .lod_tensor import create_lod_tensor, create_random_int_lodtensor
 from . import clip
 from . import profiler
 from . import unique_name
+from . import recordio_writer
 if os.name != 'nt':
-    from . import recordio_writer
     from . import parallel_executor
     from .parallel_executor import *
 from paddle.fluid.layers.math_op_patch import monkey_patch_variable

@@ -64,6 +64,7 @@ class SaveOp : public framework::OperatorBase {
                      framework::Variable *var) const {
     auto filename = Attr<std::string>("file_path");
     auto overwrite = Attr<bool>("overwrite");
+    auto format = Attr<std::string>("format");
 
     if (FileExists(filename) && !overwrite) {
       PADDLE_THROW("%s is existed, cannot save to it when overwrite=false",
@@ -80,9 +81,15 @@ class SaveOp : public framework::OperatorBase {
 
     // FIXME(yuyang18): We save variable to local file now, but we should change
     // it to save an output stream.
-    std::ofstream fout(filename);
-    PADDLE_ENFORCE(static_cast<bool>(fout), "Cannot open %s to write",
-                   filename);
+    std::unique_ptr<std::ofstream> fout;
+    if (format == "windows") {
+      fout.reset(new std::ofstream(filename,
+                                   std::ios_base::out | std::ios_base::binary));
+    } else {
+      fout.reset(new std::ofstream(filename));
+    }
+    PADDLE_ENFORCE(static_cast<bool>(*fout), "Cannot open %s to write",
+            filename);
 
     auto save_as_fp16 = Attr<bool>("save_as_fp16");
     auto in_dtype = framework::ToDataType(tensor.type());
@@ -95,11 +102,10 @@ class SaveOp : public framework::OperatorBase {
       framework::TransDataType(in_kernel_type, out_kernel_type, tensor, &out);
       // copy LoD info to the new tensor
       out.set_lod(tensor.lod());
-      framework::SerializeToStream(fout, out, dev_ctx);
+      framework::SerializeToStream(*fout, out, dev_ctx);
     } else {
-      framework::SerializeToStream(fout, tensor, dev_ctx);
+      framework::SerializeToStream(*fout, tensor, dev_ctx);
     }
-    fout.close();
   }
 
   void SaveSelectedRows(const framework::Scope &scope,
@@ -122,11 +128,17 @@ class SaveOp : public framework::OperatorBase {
 
     // FIXME(yuyang18): We save variable to local file now, but we should change
     // it to save an output stream.
-    std::ofstream fout(filename);
-    PADDLE_ENFORCE(static_cast<bool>(fout), "Cannot open %s to write",
-                   filename);
-    framework::SerializeToStream(fout, selectedRows, dev_ctx);
-    fout.close();
+    auto format = Attr<std::string>("format");
+    std::unique_ptr<std::ofstream> fout;
+    if (format == "windows") {
+      fout.reset(new std::ofstream(filename,
+                                   std::ios_base::out | std::ios_base::binary));
+    } else {
+      fout.reset(new std::ofstream(filename));
+    }
+    PADDLE_ENFORCE(static_cast<bool>(*fout), "Cannot open %s to write",
+            filename);
+    framework::SerializeToStream(*fout, selectedRows, dev_ctx);
   }
 };
 
@@ -154,6 +166,18 @@ This operator will serialize and write LoDTensor / SelectedRows variable to file
                          "The \"file_path\" where the variable will be saved.")
         .AddCustomChecker(
             [](const std::string &path) { return !path.empty(); });
+    AddAttr<std::string>("format",
+                         R"DOC((windows|linux)" "saved model file format
+                         windows and linux file newline symbol is
+different. windows(newline is \n\r) or linux(newline is \r)
+So if you set attribute format to windows, then we saved model file in binary.
+It can be used both linux and windows. If you set format to linux,
+it will save file in normal file, newline symbol is \r. Need to note
+that these two format is not inter-compatible.)DOC")
+            .SetDefault("linux")
+            .AddCustomChecker([](const std::string &s) {
+                return s == "windows" || s == "linux";
+            });
   }
 };
 
