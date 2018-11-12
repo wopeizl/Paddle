@@ -263,6 +263,7 @@ class CRFDecodeKernelImpl : public CRFDecodeKernel<T> {
     }                                                                          \
   }
 
+#ifndef _WIN32  // commented out crf decoding
 #ifdef __AVX__
 INTRIAVX_FLOAT(kEQ8);
 INTRIAVX_FLOAT(kGT8LT16);
@@ -275,6 +276,7 @@ INTRIAVX2_FLOAT(jit::avx2, kGT8LT16);
 INTRIAVX2_FLOAT(jit::avx2, kEQ16);
 INTRIAVX2_FLOAT(jit::avx2, kGT16);
 #endif
+#endif  // WIN32
 #ifdef __AVX512F__
 INTRIAVX2_FLOAT(jit::avx512f, kEQ8);
 INTRIAVX2_FLOAT(jit::avx512f, kGT8LT16);

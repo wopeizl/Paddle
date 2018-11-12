@@ -92,7 +92,7 @@ function(op_library TARGET)
             endif()
         endforeach()
 
-#        if(WITH_GPU)
+        if(WITH_GPU)
             # remove windows GPU unsupported op, because windows has no nccl, no warpctc such ops.
             foreach(windows_unsupport_gpu_op "select_op" "lstmp_op" "gru_op" "fusion_gru_op"
                     "lstm_op" "cumsum_op" "fusion_seqconv_eltadd_relu_op"
@@ -101,7 +101,7 @@ function(op_library TARGET)
                     return()
                 endif()
             endforeach()
-#        endif(WITH_GPU)
+        endif(WITH_GPU)
     endif(WIN32)
     set(OP_LIBRARY ${TARGET} ${OP_LIBRARY} PARENT_SCOPE)
 
