@@ -29,11 +29,11 @@
 #include <sys/stat.h>
 #include <algorithm>  // std::accumulate
 #else
-#include <stdio.h>
 #include <io.h>  // _popen, _pclose
+#include <stdio.h>
 #include <windows.h>
 #include <numeric>  // std::accumulate in msvc
-#ifndef S_ISDIR  // windows port for sys/stat.h
+#ifndef S_ISDIR     // windows port for sys/stat.h
 #define S_ISDIR(mode) (((mode)&S_IFMT) == S_IFDIR)
 #endif  // S_ISDIR
 

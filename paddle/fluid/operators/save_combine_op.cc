@@ -57,7 +57,7 @@ class SaveCombineOp : public framework::OperatorBase {
       fout.reset(new std::ofstream(filename));
     }
     PADDLE_ENFORCE(static_cast<bool>(*fout), "Cannot open %s to write",
-            filename);
+                   filename);
 
     auto inp_var_names = Inputs("X");
     PADDLE_ENFORCE_GT(static_cast<int>(inp_var_names.size()), 0,
@@ -137,10 +137,10 @@ So if you set attribute format to windows, then we saved model file in binary.
 It can be used both linux and windows. If you set format to linux,
 it will save file in normal file, newline symbol is \r. Need to note
 that these two format is not inter-compatible.)DOC")
-            .SetDefault("linux")
-            .AddCustomChecker([](const std::string &s) {
-                return s == "windows" || s == "linux";
-            });
+        .SetDefault("linux")
+        .AddCustomChecker([](const std::string &s) {
+          return s == "windows" || s == "linux";
+        });
   }
 };
 

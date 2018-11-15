@@ -151,6 +151,7 @@ void avx_lstm_forward_one_sequence(Op op, LstmMetaValue<T> value,
                                    int frame_size, ActivationType active_node,
                                    ActivationType active_gate,
                                    ActivationType active_state) {
+#ifndef _WIN32
 #ifdef __AVX__
   __m256 r_value_in;
   __m256 r_value_ig;
@@ -199,6 +200,7 @@ void avx_lstm_forward_one_sequence(Op op, LstmMetaValue<T> value,
     (reinterpret_cast<__m256 *>(value.output_value))[i] = r_out;
   }
 #endif
+#endif
 }
 
 template <class T, class Op>
@@ -207,6 +209,7 @@ void avx_lstm_backward_one_sequence(Op op, LstmMetaValue<T> value,
                                     ActivationType active_node,
                                     ActivationType active_gate,
                                     ActivationType active_state) {
+#ifndef _WIN32
 #ifdef __AVX__
   __m256 r_value_in;
   __m256 r_value_ig;
@@ -281,6 +284,7 @@ void avx_lstm_backward_one_sequence(Op op, LstmMetaValue<T> value,
     if (grad.check_og_grad)
       (reinterpret_cast<__m256 *>(grad.check_og_grad))[i] += r_checkOGrad;
   }
+#endif
 #endif
 }
 

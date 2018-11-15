@@ -204,11 +204,13 @@ CUDADeviceContext::CUDADeviceContext(CUDAPlace place)
                           << "." << (driver_version_ % 100) / 10
                           << ", Runtime Version: " << runtime_version_ / 1000
                           << "." << (runtime_version_ % 100) / 10;
+#ifndef _WIN32
   size_t cudnn_dso_ver = dynload::cudnnGetVersion();
   LOG_FIRST_N(WARNING, 1) << "device: " << place_.device
                           << ", cuDNN Version: " << cudnn_dso_ver / 1000 << "."
                           << (cudnn_dso_ver % 100) / 10 << ".";
   callback_manager_.reset(new StreamCallbackManager(stream_));
+#endif  // NOT WIN32
 }
 
 CUDADeviceContext::~CUDADeviceContext() {

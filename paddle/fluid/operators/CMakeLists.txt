@@ -93,8 +93,10 @@ function(op_library TARGET)
     if (WIN32)
         # remove windows unsupported op, because windows has no nccl, no warpctc such ops.
         foreach(windows_unsupport_op "nccl_op" "gen_nccl_id_op" "warpctc_op" "hierarchical_sigmoid_op"
-                "channel_send_op" "channel_create_op" "channel_close_op" "channel_recv_op"  "fusion_lstm_op"
-                "crf_decoding_op" )
+                "channel_send_op" "channel_create_op" "channel_close_op" "channel_recv_op"
+                "select_op"
+                 "cumsum_op" "fusion_seqconv_eltadd_relu_op"
+                "fusion_seqexpand_concat_fc_op" "attention_lstm_op" "fused_embedding_fc_lstm_op" "fc_op")
             if ("${TARGET}" STREQUAL "${windows_unsupport_op}")
                 return()
             endif()
@@ -102,9 +104,10 @@ function(op_library TARGET)
 
         if(WITH_GPU)
             # remove windows GPU unsupported op, because windows has no nccl, no warpctc such ops.
-            foreach(windows_unsupport_gpu_op "select_op" "lstmp_op" "gru_op" "fusion_gru_op"
-                    "lstm_op" "cumsum_op" "fusion_seqconv_eltadd_relu_op"
-                    "fusion_seqexpand_concat_fc_op" "attention_lstm_op" "fused_embedding_fc_lstm_op" "fc_op")
+            foreach(windows_unsupport_gpu_op
+#                    "fusion_lstm_op" "lstmp_op" "gru_op"
+#                    "crf_decoding_op" "fusion_gru_op" "lstm_op"
+                    )
                 if ("${TARGET}" STREQUAL "${windows_unsupport_gpu_op}")
                     return()
                 endif()
@@ -303,11 +306,11 @@ op_library(array_to_lod_tensor_op DEPS lod_rank_table_op)
 op_library(max_sequence_len_op DEPS lod_rank_table)
 op_library(sequence_conv_op DEPS context_project)
 op_library(sequence_pool_op DEPS sequence_pooling)
-if (NOT WIN32)
     op_library(lstm_op DEPS sequence2batch lstm_compute)
-    op_library(hierarchical_sigmoid_op DEPS matrix_bit_code)
+#    op_library(hierarchical_sigmoid_op DEPS matrix_bit_code)
     op_library(lstmp_op DEPS sequence2batch lstm_compute)
     op_library(gru_op DEPS sequence2batch gru_compute)
+if (NOT WIN32)
 endif(NOT WIN32)
 op_library(recurrent_op DEPS executor)
 op_library(warpctc_op DEPS dynload_warpctc sequence_padding sequence_scale)
@@ -319,9 +322,9 @@ op_library(flatten_op DEPS reshape_op)
 op_library(sequence_pad_op DEPS sequence_padding)
 op_library(unstack_op DEPS stack_op)
 op_library(fake_quantize_op DEPS memory)
-if(NOT WIN32)
     op_library(crf_decoding_op DEPS jit_kernel)
     op_library(fusion_lstm_op DEPS jit_kernel)
+if(NOT WIN32)
 endif()
 if (WITH_GPU)
     op_library(conv_op DEPS vol2col depthwise_conv im2col)

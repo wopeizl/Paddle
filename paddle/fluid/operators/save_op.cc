@@ -89,7 +89,7 @@ class SaveOp : public framework::OperatorBase {
       fout.reset(new std::ofstream(filename));
     }
     PADDLE_ENFORCE(static_cast<bool>(*fout), "Cannot open %s to write",
-            filename);
+                   filename);
 
     auto save_as_fp16 = Attr<bool>("save_as_fp16");
     auto in_dtype = framework::ToDataType(tensor.type());
@@ -137,7 +137,7 @@ class SaveOp : public framework::OperatorBase {
       fout.reset(new std::ofstream(filename));
     }
     PADDLE_ENFORCE(static_cast<bool>(*fout), "Cannot open %s to write",
-            filename);
+                   filename);
     framework::SerializeToStream(*fout, selectedRows, dev_ctx);
   }
 };
@@ -174,10 +174,10 @@ So if you set attribute format to windows, then we saved model file in binary.
 It can be used both linux and windows. If you set format to linux,
 it will save file in normal file, newline symbol is \r. Need to note
 that these two format is not inter-compatible.)DOC")
-            .SetDefault("linux")
-            .AddCustomChecker([](const std::string &s) {
-                return s == "windows" || s == "linux";
-            });
+        .SetDefault("linux")
+        .AddCustomChecker([](const std::string &s) {
+          return s == "windows" || s == "linux";
+        });
   }
 };
 

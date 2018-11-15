@@ -42,7 +42,7 @@ class LoadCombineOp : public framework::OperatorBase {
       fin.reset(new std::ifstream(filename));
     }
     PADDLE_ENFORCE(static_cast<bool>(*fin),
-            "Cannot open file %s for load_combine op", filename);
+                   "Cannot open file %s for load_combine op", filename);
 
     auto out_var_names = Outputs("Out");
     PADDLE_ENFORCE_GT(

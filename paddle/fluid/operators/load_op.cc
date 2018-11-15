@@ -37,10 +37,10 @@ class LoadOp : public framework::OperatorBase {
     auto format = Attr<std::string>("format");
     std::unique_ptr<std::ifstream> fin;
     if (format == "windows") {
-        fin.reset(new std::ifstream(filename,
-                                    std::ios_base::in | std::ios_base::binary));
+      fin.reset(new std::ifstream(filename,
+                                  std::ios_base::in | std::ios_base::binary));
     } else {
-        fin.reset(new std::ifstream(filename));
+      fin.reset(new std::ifstream(filename));
     }
     PADDLE_ENFORCE(static_cast<bool>(*fin), "Cannot open file %s for load op",
                    filename);
@@ -125,10 +125,10 @@ So if you set attribute format to windows, then we saved model file in binary.
 It can be used both linux and windows. If you set format to linux,
 it will save file in normal file, newline symbol is \r. Need to note
 that these two format is not inter-compatible.)DOC")
-            .SetDefault("linux")
-            .AddCustomChecker([](const std::string &s) {
-                return s == "windows" || s == "linux";
-            });
+        .SetDefault("linux")
+        .AddCustomChecker([](const std::string &s) {
+          return s == "windows" || s == "linux";
+        });
     AddComment(
         "Load operator will load a LoDTensor / SelectedRows variable from disk "
         "file.");

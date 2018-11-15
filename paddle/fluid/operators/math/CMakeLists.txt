@@ -1,6 +1,6 @@
 if (NOT WIN32)
-    add_subdirectory(detail)
 endif(NOT WIN32)
+add_subdirectory(detail)
 
 function(math_library TARGET)
     # math_library is a function to create math library.
@@ -42,13 +42,14 @@ math_library(cos_sim_functor)
 math_library(depthwise_conv)
 math_library(im2col)
 
-if (NOT WIN32) # windows do not support avx functions yet.
-    math_library(gru_compute DEPS activation_functions math_function)
-    math_library(lstm_compute DEPS activation_functions)
-endif (NOT WIN32)
-
 cc_library(blas SRCS blas.cc DEPS cblas framework_proto device_context)
 math_library(math_function DEPS blas)
+
+if (NOT WIN32) # windows do not support avx functions yet.
+endif (NOT WIN32)
+math_library(gru_compute DEPS activation_functions math_function)
+math_library(lstm_compute DEPS activation_functions)
+
 math_library(maxouting)
 math_library(pooling)
 math_library(selected_rows_functor DEPS selected_rows math_function blas)
