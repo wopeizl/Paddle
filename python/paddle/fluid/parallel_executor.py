@@ -25,9 +25,9 @@ import os
 
 __all__ = ['ParallelExecutor', 'ExecutionStrategy', 'BuildStrategy']
 
+if os.name != 'nt':
     ExecutionStrategy = core.ParallelExecutor.ExecutionStrategy
     BuildStrategy = core.ParallelExecutor.BuildStrategy
-
 
     class ParallelExecutor(object):
         """
