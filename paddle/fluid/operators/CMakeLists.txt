@@ -95,8 +95,7 @@ function(op_library TARGET)
         foreach(windows_unsupport_op "nccl_op" "gen_nccl_id_op" "warpctc_op" "hierarchical_sigmoid_op"
                 "channel_send_op" "channel_create_op" "channel_close_op" "channel_recv_op"
                 "select_op"
-                 "cumsum_op" "fusion_seqconv_eltadd_relu_op"
-                "fusion_seqexpand_concat_fc_op" "attention_lstm_op" "fused_embedding_fc_lstm_op" "fc_op")
+                 )
             if ("${TARGET}" STREQUAL "${windows_unsupport_op}")
                 return()
             endif()
@@ -107,6 +106,8 @@ function(op_library TARGET)
             foreach(windows_unsupport_gpu_op
 #                    "fusion_lstm_op" "lstmp_op" "gru_op"
 #                    "crf_decoding_op" "fusion_gru_op" "lstm_op"
+#                    "cumsum_op" "fusion_seqconv_eltadd_relu_op"
+#                    "fusion_seqexpand_concat_fc_op" "attention_lstm_op" "fused_embedding_fc_lstm_op" "fc_op"
                     )
                 if ("${TARGET}" STREQUAL "${windows_unsupport_gpu_op}")
                     return()

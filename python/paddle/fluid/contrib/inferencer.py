@@ -22,8 +22,7 @@ from .. import core
 from .. import executor
 from .. import framework
 from .. import io
-if os.name != 'nt':
-    from .. import parallel_executor
+from .. import parallel_executor
 from .. import unique_name
 from .trainer import check_and_get_place
 
