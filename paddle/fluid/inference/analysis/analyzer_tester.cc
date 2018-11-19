@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <mutex>  // NOLINT
 #include "paddle/fluid/inference/analysis/analyzer.h"
 
 #include <google/protobuf/text_format.h>
@@ -74,7 +73,7 @@ void TestWord2vecPrediction(const std::string& model_path) {
                      0.000932706};
   const size_t num_elements = outputs.front().data.length() / sizeof(float);
   // The outputs' buffers are in CPU memory.
-  for (size_t i = 0; i < (std::min)(5UL, num_elements); i++) {
+  for (size_t i = 0; i < (5UL < num_elements ? 5UL : num_elements); i++) {
     LOG(INFO) << "data: "
               << static_cast<float*>(outputs.front().data.data())[i];
     PADDLE_ENFORCE(static_cast<float*>(outputs.front().data.data())[i],
