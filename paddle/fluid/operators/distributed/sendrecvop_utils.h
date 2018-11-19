@@ -13,17 +13,16 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 #pragma once
-#include <sys/time.h>
 #include <iostream>
 #include <string>
 #include <vector>
-
 #include "paddle/fluid/framework/data_type.h"
 #include "paddle/fluid/framework/lod_tensor.h"
 #include "paddle/fluid/framework/scope.h"
 #include "paddle/fluid/framework/selected_rows.h"
 #include "paddle/fluid/framework/tensor_util.h"
 #include "paddle/fluid/framework/var_type.h"
+#include "paddle/fluid/platform/port.h"
 
 #include "paddle/fluid/operators/distributed/send_recv.pb.h"
 
