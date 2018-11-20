@@ -18,7 +18,7 @@
 #include <cuda_runtime.h>
 #include <functional>
 #include <memory>
-#include "ThreadPool.h"
+#include <ThreadPool.h>
 #include "paddle/fluid/platform/enforce.h"
 
 namespace paddle {
@@ -45,16 +45,18 @@ class StreamCallbackManager {
   inline void AddCallback(Callback &&callback) const {
     auto *stream_callback_context =
         new StreamCallbackContext(this, std::forward<Callback>(callback));
-    PADDLE_ENFORCE(
 #if CUDA_VERSION >= 10000
+    PADDLE_ENFORCE(
         cudaLaunchHostFunc(stream_, StreamCallbackManager::StreamCallbackFunc,
                            stream_callback_context)
+            );  // NOLINT
 #else
+    PADDLE_ENFORCE(
         cudaStreamAddCallback(stream_,
                               StreamCallbackManager::StreamCallbackFunc,
                               stream_callback_context, 0)
+    );  // NOLINT
 #endif
-            );  // NOLINT
   }
 
   void Wait() const { thread_pool_.reset(new ThreadPool(1)); }

@@ -257,7 +257,7 @@ inline void throw_on_error(T e) {
   } while (false)
 
 #ifndef REPLACE_ENFORCE_GLOG
-#define PADDLE_ENFORCE_EX(...)                                             \
+#define PADDLE_ENFORCE(...)                                             \
   do {                                                                  \
     try {                                                               \
       ::paddle::platform::throw_on_error(__VA_ARGS__);                  \
@@ -268,16 +268,8 @@ inline void throw_on_error(T e) {
   } while (false)
 
 #else
-#define PADDLE_ENFORCE_EX(...) ::paddle::platform::throw_on_error(__VA_ARGS__);
+#define PADDLE_ENFORCE(...) ::paddle::platform::throw_on_error(__VA_ARGS__);
 #endif  // REPLACE_ENFORCE_GLOG
-
-#ifdef _WIN32
-#define EXPAND( x ) x
-#define F(x, ...) PADDLE_ENFORCE_EX(x, __VA_ARGS__)
-#define PADDLE_ENFORCE(...) EXPAND( F(__VA_ARGS__) )
-#else
-#define PADDLE_ENFORCE(...) PADDLE_ENFORCE_EX(...)
-#endif
 
 #define PADDLE_THROW_EOF()                                                     \
   do {                                                                         \
