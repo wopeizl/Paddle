@@ -22,7 +22,6 @@ namespace paddle {
 namespace operators {
 namespace math {
 
-
 template <typename T>
 struct MaxPoolFunctor {
   HOSTDEVICE void operator()(const T* input, const size_t start,

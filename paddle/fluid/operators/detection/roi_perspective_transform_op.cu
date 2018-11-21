@@ -17,7 +17,6 @@ limitations under the License. */
 #include "paddle/fluid/platform/cuda_primitives.h"
 #include "paddle/fluid/platform/float16.h"
 
-
 namespace paddle {
 namespace operators {
 
@@ -38,7 +37,7 @@ __device__ bool GT_E(T a, T b) {
 
 template <typename T>
 __device__ bool LT_E(T a, T b) {
-  return (a < b) ||  fabsf(static_cast<float>(a - b)) < 1e-4;
+  return (a < b) || fabsf(static_cast<float>(a - b)) < 1e-4;
 }
 
 template <typename T>

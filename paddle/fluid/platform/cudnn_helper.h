@@ -61,7 +61,7 @@ inline const char* cudnnGetErrorString(cudnnStatus_t status) {
 
 #define CUDNN_ENFORCE(condition)                                     \
   do {                                                               \
-    auto status = condition;                                \
+    auto status = condition;                                         \
     if (UNLIKELY(status != CUDNN_STATUS_SUCCESS)) {                  \
       PADDLE_THROW(::paddle::platform::cudnnGetErrorString(status)); \
     }                                                                \
