@@ -28,9 +28,7 @@ reader_library(create_multi_pass_reader_op SRCS create_multi_pass_reader_op.cc)
 reader_library(create_custom_reader_op SRCS create_custom_reader_op.cc)
 reader_library(create_py_reader_op SRCS create_py_reader_op.cc)
 
-if(NOT WIN32)
-    cc_test(reader_blocking_queue_test SRCS reader_blocking_queue_test.cc)
-endif(NOT WIN32)
+cc_test(reader_blocking_queue_test SRCS reader_blocking_queue_test.cc)
 # Export local libraries to parent
 # set(READER_LIBRARY ${LOCAL_READER_LIBS} PARENT_SCOPE)
 
