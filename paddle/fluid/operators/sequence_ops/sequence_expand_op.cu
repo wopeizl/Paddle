@@ -99,7 +99,7 @@ struct SequenceExpandFunctor<platform::CUDADeviceContext, T> {
     framework::Vector<size_t> out_offset(x_lod.size());
     GetOutputOffset(x_lod, ref_lod, &out_offset);
 
-    int thread_x = std::min(32, std::max(static_cast<int>(ref_lod.size()), 16));
+    int thread_x = fmin(32, fmax(static_cast<int>(ref_lod.size()), 16));
     int thread_y = 16;
     int thread_z = 1024 / thread_x / thread_y;
     int block_x = static_cast<int>(ref_lod.size());
@@ -125,7 +125,7 @@ struct SequenceExpandGradFunctor<platform::CUDADeviceContext, T> {
     framework::Vector<size_t> out_offset(x_lod.size());
     GetOutputOffset(x_lod, ref_lod, &out_offset);
 
-    int thread_x = std::min(32, std::max(static_cast<int>(ref_lod.size()), 16));
+    int thread_x = fmin(32, fmax(static_cast<int>(ref_lod.size()), 16));
     int thread_y = 16;
     int thread_z = 1024 / thread_x / thread_y;
     int block_x = static_cast<int>(ref_lod.size());

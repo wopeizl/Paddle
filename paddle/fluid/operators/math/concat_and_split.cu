@@ -161,12 +161,12 @@ class ConcatFunctor<platform::CUDADeviceContext, T> {
     dim3 block_size = dim3(block_cols, block_rows, 1);
 
     int max_threads = context.GetMaxPhysicalThreadCount();
-    int max_blocks = std::max(max_threads / kThreadsPerBlock, 1);
+    int max_blocks = fmax(max_threads / kThreadsPerBlock, 1);
 
     int grid_cols =
-        std::min((out_col + block_cols - 1) / block_cols, max_blocks);
+        fmin((out_col + block_cols - 1) / block_cols, max_blocks);
     int grid_rows =
-        std::min(max_blocks / grid_cols, std::max(out_row / block_rows, 1));
+        fmin(max_blocks / grid_cols, fmax(out_row / block_rows, 1));
     dim3 grid_size = dim3(grid_cols, grid_rows, 1);
 
     if (sameShape) {
@@ -239,12 +239,12 @@ class SplitFunctor<platform::CUDADeviceContext, T> {
     dim3 block_size = dim3(block_cols, block_rows, 1);
 
     int max_threads = context.GetMaxPhysicalThreadCount();
-    int max_blocks = std::max(max_threads / kThreadsPerBlock, 1);
+    int max_blocks = fmax(max_threads / kThreadsPerBlock, 1);
 
     int grid_cols =
-        std::min((in_col + block_cols - 1) / block_cols, max_blocks);
+        fmin((in_col + block_cols - 1) / block_cols, max_blocks);
     int grid_rows =
-        std::min(max_blocks / grid_cols, std::max(out_row / block_rows, 1));
+        fmin(max_blocks / grid_cols, fmax(out_row / block_rows, 1));
     dim3 grid_size = dim3(grid_cols, grid_rows, 1);
 
     if (sameShape) {

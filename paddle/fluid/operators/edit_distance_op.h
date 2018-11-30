@@ -76,7 +76,7 @@ class EditDistanceKernel : public framework::OpKernel<T> {
             int dels = dist[(i - 1) * (n + 1) + j] + 1;
             int ins = dist[i * (n + 1) + (j - 1)] + 1;
             int subs = dist[(i - 1) * (n + 1) + (j - 1)] + cost;
-            dist[i * (n + 1) + j] = std::min(dels, std::min(ins, subs));
+            dist[i * (n + 1) + j] = fmin(dels, fmin(ins, subs));
           }
         }
         distance = dist[m * (n + 1) + n];

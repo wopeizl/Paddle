@@ -133,10 +133,10 @@ class DetectionMAPOpKernel : public framework::OpKernel<T> {
         box2.ymin > box1.ymax || box2.ymax < box1.ymin) {
       return 0.0;
     } else {
-      T inter_xmin = std::max(box1.xmin, box2.xmin);
-      T inter_ymin = std::max(box1.ymin, box2.ymin);
-      T inter_xmax = std::min(box1.xmax, box2.xmax);
-      T inter_ymax = std::min(box1.ymax, box2.ymax);
+      T inter_xmin = fmax(box1.xmin, box2.xmin);
+      T inter_ymin = fmax(box1.ymin, box2.ymin);
+      T inter_xmax = fmin(box1.xmax, box2.xmax);
+      T inter_ymax = fmin(box1.ymax, box2.ymax);
 
       T inter_width = inter_xmax - inter_xmin;
       T inter_height = inter_ymax - inter_ymin;
@@ -152,10 +152,10 @@ class DetectionMAPOpKernel : public framework::OpKernel<T> {
   inline void ClipBBox(const Box& bbox, Box* clipped_bbox) const {
     T one = static_cast<T>(1.0);
     T zero = static_cast<T>(0.0);
-    clipped_bbox->xmin = std::max(std::min(bbox.xmin, one), zero);
-    clipped_bbox->ymin = std::max(std::min(bbox.ymin, one), zero);
-    clipped_bbox->xmax = std::max(std::min(bbox.xmax, one), zero);
-    clipped_bbox->ymax = std::max(std::min(bbox.ymax, one), zero);
+    clipped_bbox->xmin = fmax(fmin(bbox.xmin, one), zero);
+    clipped_bbox->ymin = fmax(fmin(bbox.ymin, one), zero);
+    clipped_bbox->xmax = fmax(fmin(bbox.xmax, one), zero);
+    clipped_bbox->ymax = fmax(fmin(bbox.ymax, one), zero);
   }
 
   void GetBoxes(const framework::LoDTensor& input_label,

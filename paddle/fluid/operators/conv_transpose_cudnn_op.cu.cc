@@ -181,7 +181,7 @@ class CUDNNConvTransposeGradOpKernel : public framework::OpKernel<T> {
       CUDNN_ENFORCE(platform::dynload::cudnnGetConvolutionForwardWorkspaceSize(
           handle, cudnn_output_desc, cudnn_filter_desc, cudnn_conv_desc,
           cudnn_input_desc, data_algo, &fwd_ws_size));
-      workspace_size_in_bytes = std::max(workspace_size_in_bytes, fwd_ws_size);
+      workspace_size_in_bytes = fmax(workspace_size_in_bytes, fwd_ws_size);
     }
 
     if (filter_grad) {
@@ -199,7 +199,7 @@ class CUDNNConvTransposeGradOpKernel : public framework::OpKernel<T> {
               handle, cudnn_output_desc, cudnn_input_desc, cudnn_conv_desc,
               cudnn_filter_desc, filter_algo, &bwd_filter_ws_size));
       workspace_size_in_bytes =
-          std::max(workspace_size_in_bytes, bwd_filter_ws_size);
+          fmax(workspace_size_in_bytes, bwd_filter_ws_size);
     }
 
     // ------------------- cudnn conv backward data ---------------------

@@ -382,7 +382,8 @@ void TensorToStream(std::ostream& os, const Tensor& tensor,
     desc.set_data_type(framework::ToDataType(tensor.type()));
     auto dims = framework::vectorize(tensor.dims());
     auto* pb_dims = desc.mutable_dims();
-    pb_dims->Resize(static_cast<int>(dims.size()), 0);
+    //fix me ........
+//    pb_dims->Resize(static_cast<int>(dims.size()), 0);
     std::copy(dims.begin(), dims.end(), pb_dims->begin());
     int32_t size = desc.ByteSize();
     os.write(reinterpret_cast<const char*>(&size), sizeof(size));
@@ -404,7 +405,7 @@ void TensorToStream(std::ostream& os, const Tensor& tensor,
       platform::CPUPlace cpu;
       uintptr_t data = reinterpret_cast<uintptr_t>(data_ptr);
       while (size != 0) {
-        size_t size_to_write = std::min(kBufSize, static_cast<size_t>(size));
+        size_t size_to_write = fmin(kBufSize, static_cast<size_t>(size));
         memory::Copy(cpu, buf.get(),
                      boost::get<platform::CUDAPlace>(tensor.place()),
                      reinterpret_cast<const void*>(data), size_to_write,

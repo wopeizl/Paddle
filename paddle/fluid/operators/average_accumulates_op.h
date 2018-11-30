@@ -92,7 +92,7 @@ class AverageAccumulatesKernel : public framework::OpKernel<T> {
                        0.0);
     }
     if (num_accumulates >= min_average_window &&
-        num_accumulates >= std::min<int64_t>(max_average_window,
+        num_accumulates >= fmin<int64_t>(max_average_window,
                                              num_updates * average_window)) {
       //  Now the average window is too long, discard the old sum.
       out_sum_3_tensor.device(place) = in_sum_1_tensor + in_sum_2_tensor;

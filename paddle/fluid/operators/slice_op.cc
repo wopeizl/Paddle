@@ -46,11 +46,11 @@ class SliceOp : public framework::OperatorWithKernel {
       dim_value = out_dims[axes[i]];
       start = starts[i] < 0 ? (starts[i] + dim_value) : starts[i];
       end = ends[i] < 0 ? (ends[i] + dim_value) : ends[i];
-      start = std::max(start, 0);
-      end = std::max(end, 0);
-      start = std::min(start, dim_value);
-      end = std::min(end, dim_value);
-      start = std::min(start, end);
+      start = fmax(start, 0);
+      end = fmax(end, 0);
+      start = fmin(start, dim_value);
+      end = fmin(end, dim_value);
+      start = fmin(start, end);
       out_dims[axes[i]] = end - start;
     }
     ctx->SetOutputDim("Out", out_dims);

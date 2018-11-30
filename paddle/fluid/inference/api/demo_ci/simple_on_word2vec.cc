@@ -68,7 +68,7 @@ void Main(bool use_gpu) {
                        0.000932706};
     const size_t num_elements = outputs.front().data.length() / sizeof(float);
     // The outputs' buffers are in CPU memory.
-    for (size_t i = 0; i < std::min(static_cast<size_t>(5), num_elements);
+    for (size_t i = 0; i < fmin(static_cast<size_t>(5), num_elements);
          i++) {
       CHECK_NEAR(static_cast<float*>(outputs.front().data.data())[i], result[i],
                  0.001);
@@ -114,7 +114,7 @@ void MainThreads(int num_threads, bool use_gpu) {
         const size_t num_elements =
             outputs.front().data.length() / sizeof(float);
         // The outputs' buffers are in CPU memory.
-        for (size_t i = 0; i < std::min(static_cast<size_t>(5), num_elements);
+        for (size_t i = 0; i < fmin(static_cast<size_t>(5), num_elements);
              i++) {
           CHECK_NEAR(static_cast<float*>(outputs.front().data.data())[i],
                      result[i], 0.001);

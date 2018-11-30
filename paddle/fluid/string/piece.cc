@@ -113,7 +113,7 @@ size_t Find(Piece s, char c, size_t pos) {
 
 size_t RFind(Piece s, char c, size_t pos) {
   if (s.len() == 0) return Piece::npos;
-  for (const char* p = s.data() + std::min(pos, s.len() - 1); p >= s.data();
+  for (const char* p = s.data() + static_cast<int>(fmin(pos, s.len() - 1)); p >= s.data();
        p--) {
     if (*p == c) {
       return p - s.data();

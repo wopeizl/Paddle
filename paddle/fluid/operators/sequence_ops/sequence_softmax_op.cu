@@ -122,7 +122,7 @@ struct SequenceSoftmaxFunctor<platform::CUDADeviceContext, T> {
     const int kThreadsPerBlock = 32;
     int thread_x = kThreadsPerBlock;
     int max_threads = context.GetMaxPhysicalThreadCount();
-    int max_blocks = std::max(max_threads / kThreadsPerBlock, 1);
+    int max_blocks = fmax(max_threads / kThreadsPerBlock, 1);
 
     dim3 block_size(thread_x);
     dim3 grid_size(max_blocks);
@@ -144,7 +144,7 @@ struct SequenceSoftmaxGradFunctor<platform::CUDADeviceContext, T> {
     const int kThreadsPerBlock = 32;
     int thread_x = kThreadsPerBlock;
     int max_threads = context.GetMaxPhysicalThreadCount();
-    int max_blocks = std::max(max_threads / kThreadsPerBlock, 1);
+    int max_blocks = fmax(max_threads / kThreadsPerBlock, 1);
 
     dim3 block_size(thread_x);
     dim3 grid_size(max_blocks);

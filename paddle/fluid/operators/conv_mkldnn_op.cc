@@ -335,7 +335,7 @@ class ConvMKLDNNOpKernel : public paddle::framework::OpKernel<T> {
     std::vector<int> src_tz = paddle::framework::vectorize2int(input->dims());
     std::vector<int> weights_tz =
         paddle::framework::vectorize2int(filter->dims());
-    int g = std::max(groups, 1);
+    int g = fmax(groups, 1);
     if (g > 1) {
       int o = weights_tz[0];
       int i = weights_tz[1];

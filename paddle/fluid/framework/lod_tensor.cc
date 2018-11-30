@@ -338,7 +338,7 @@ std::vector<LoDTensor> LoDTensor::SplitLoDTensor(
   check_memory_size();
   int batch_size =
       lod().empty() ? dims()[0] : static_cast<int>(lod()[0].size()) - 1;
-  size_t result_size = std::min(static_cast<size_t>(batch_size), places.size());
+  size_t result_size = fmin(static_cast<size_t>(batch_size), places.size());
   size_t remainder = batch_size % places.size();
 
   std::vector<LoDTensor> results;

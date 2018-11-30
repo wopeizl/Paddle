@@ -120,9 +120,9 @@ inline void Split(cudaStream_t stream, const bool same_shape,
   dim3 block_size = dim3(block_cols, block_rows, 1);
 
   int grid_cols =
-      std::min((inner_cols + block_cols - 1) / block_cols, kMaxBlocks);
+      fmin((inner_cols + block_cols - 1) / block_cols, kMaxBlocks);
   int grid_rows =
-      std::min(kMaxBlocks / grid_cols, std::max(outer_rows / block_rows, 1));
+      fmin(kMaxBlocks / grid_cols, fmax(outer_rows / block_rows, 1));
   dim3 grid_size = dim3(grid_cols, grid_rows, 1);
 
   if (same_shape) {

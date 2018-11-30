@@ -85,12 +85,12 @@ void Pad2DReflectNCHW(const T* in_data, const int num, const int channels,
         for (int out_w = 0; out_w < out_width; ++out_w) {
           int in_h = out_h - pad_top;
           int in_w = out_w - pad_left;
-          in_h = std::max(in_h, -in_h);  // reflect by 0
+          in_h = fmax(in_h, -in_h);  // reflect by 0
           in_h =
-              std::min(in_h, 2 * in_height - in_h - 2);  // reflect by in_height
-          in_w = std::max(in_w, -in_w);                  // reflect by 0
+              fmin(in_h, 2 * in_height - in_h - 2);  // reflect by in_height
+          in_w = fmax(in_w, -in_w);                  // reflect by 0
           in_w =
-              std::min(in_w, 2 * in_width - in_w - 2);  // reflect by in_width
+              fmin(in_w, 2 * in_width - in_w - 2);  // reflect by in_width
           out_data[out_h * out_width + out_w] = in_data[in_h * in_width + in_w];
         }
       }
@@ -111,10 +111,10 @@ void Pad2DReflectNHWC(const T* in_data, const int num, const int channels,
         const int out_index = (out_h * out_width + out_w) * channels;
         int in_h = out_h - pad_top;
         int in_w = out_w - pad_left;
-        in_h = std::max(in_h, -in_h);
-        in_h = std::min(in_h, 2 * in_height - in_h - 2);
-        in_w = std::max(in_w, -in_w);
-        in_w = std::min(in_w, 2 * in_width - in_w - 2);
+        in_h = fmax(in_h, -in_h);
+        in_h = fmin(in_h, 2 * in_height - in_h - 2);
+        in_w = fmax(in_w, -in_w);
+        in_w = fmin(in_w, 2 * in_width - in_w - 2);
         const int in_index = (in_h * in_width + in_w) * channels;
 
         for (int c = 0; c < channels; ++c) {
@@ -136,8 +136,8 @@ void Pad2DEdgeNCHW(const T* in_data, const int num, const int channels,
     for (int c = 0; c < channels; ++c) {
       for (int out_h = 0; out_h < out_height; ++out_h) {
         for (int out_w = 0; out_w < out_width; ++out_w) {
-          int in_h = std::min(in_height - 1, std::max(out_h - pad_top, 0));
-          int in_w = std::min(in_width - 1, std::max(out_w - pad_left, 0));
+          int in_h = fmin(in_height - 1, fmax(out_h - pad_top, 0));
+          int in_w = fmin(in_width - 1, fmax(out_w - pad_left, 0));
           out_data[out_h * out_width + out_w] = in_data[in_h * in_width + in_w];
         }
       }
@@ -156,8 +156,8 @@ void Pad2DEdgeNHWC(const T* in_data, const int num, const int channels,
     for (int out_h = 0; out_h < out_height; ++out_h) {
       for (int out_w = 0; out_w < out_width; ++out_w) {
         const int out_index = (out_h * out_width + out_w) * channels;
-        int in_h = std::min(in_height - 1, std::max(out_h - pad_top, 0));
-        int in_w = std::min(in_width - 1, std::max(out_w - pad_left, 0));
+        int in_h = fmin(in_height - 1, fmax(out_h - pad_top, 0));
+        int in_w = fmin(in_width - 1, fmax(out_w - pad_left, 0));
         const int in_index = (in_h * in_width + in_w) * channels;
         for (int c = 0; c < channels; ++c) {
           out_data[out_index + c] = in_data[in_index + c];
@@ -231,12 +231,12 @@ void Pad2DGradReflectNCHW(T* d_in_data, const int num, const int channels,
         for (int out_w = 0; out_w < out_width; ++out_w) {
           int in_h = out_h - pad_top;
           int in_w = out_w - pad_left;
-          in_h = std::max(in_h, -in_h);  // reflect over 0
-          in_h = std::min(in_h,
+          in_h = fmax(in_h, -in_h);  // reflect over 0
+          in_h = fmin(in_h,
                           2 * in_height - in_h - 2);  // reflect over in_height
-          in_w = std::max(in_w, -in_w);               // reflect over 0
+          in_w = fmax(in_w, -in_w);               // reflect over 0
           in_w =
-              std::min(in_w, 2 * in_width - in_w - 2);  // reflect over in_width
+              fmin(in_w, 2 * in_width - in_w - 2);  // reflect over in_width
           d_in_data[in_h * in_width + in_w] +=
               d_out_data[out_h * out_width + out_w];
         }
@@ -259,10 +259,10 @@ void Pad2DGradReflectNHWC(T* d_in_data, const int num, const int channels,
         const int out_index = (out_h * out_width + out_w) * channels;
         int in_h = out_h - pad_top;
         int in_w = out_w - pad_left;
-        in_h = std::max(in_h, -in_h);
-        in_h = std::min(in_h, 2 * in_height - in_h - 2);
-        in_w = std::max(in_w, -in_w);
-        in_w = std::min(in_w, 2 * in_width - in_w - 2);
+        in_h = fmax(in_h, -in_h);
+        in_h = fmin(in_h, 2 * in_height - in_h - 2);
+        in_w = fmax(in_w, -in_w);
+        in_w = fmin(in_w, 2 * in_width - in_w - 2);
         const int in_index = (in_h * in_width + in_w) * channels;
         for (int c = 0; c < channels; ++c) {
           d_in_data[in_index + c] += d_out_data[out_index + c];
@@ -284,8 +284,8 @@ void Pad2DGradEdgeNCHW(T* d_in_data, const int num, const int channels,
     for (int c = 0; c < channels; ++c) {
       for (int out_h = 0; out_h < out_height; ++out_h) {
         for (int out_w = 0; out_w < out_width; ++out_w) {
-          int in_h = std::min(in_height - 1, std::max(out_h - pad_top, 0));
-          int in_w = std::min(in_width - 1, std::max(out_w - pad_left, 0));
+          int in_h = fmin(in_height - 1, fmax(out_h - pad_top, 0));
+          int in_w = fmin(in_width - 1, fmax(out_w - pad_left, 0));
           d_in_data[in_h * in_width + in_w] +=
               d_out_data[out_h * out_width + out_w];
         }
@@ -306,8 +306,8 @@ void Pad2DGradEdgeNHWC(T* d_in_data, const int num, const int channels,
     for (int out_h = 0; out_h < out_height; ++out_h) {
       for (int out_w = 0; out_w < out_width; ++out_w) {
         const int out_index = (out_h * out_width + out_w) * channels;
-        int in_h = std::min(in_height - 1, std::max(out_h - pad_top, 0));
-        int in_w = std::min(in_width - 1, std::max(out_w - pad_left, 0));
+        int in_h = fmin(in_height - 1, fmax(out_h - pad_top, 0));
+        int in_w = fmin(in_width - 1, fmax(out_w - pad_left, 0));
         const int in_index = (in_h * in_width + in_w) * channels;
         for (int c = 0; c < channels; ++c) {
           d_in_data[in_index + c] += d_out_data[out_index + c];

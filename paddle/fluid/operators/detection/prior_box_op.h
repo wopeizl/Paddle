@@ -49,7 +49,7 @@ inline void ExpandAspectRatios(const std::vector<float>& input_aspect_ratior,
 template <typename T>
 struct ClipFunctor {
   HOSTDEVICE inline T operator()(T in) const {
-    return std::min<T>(std::max<T>(in, 0.), 1.);
+    return fmin<T>(fmax<T>(in, 0.), 1.);
   }
 };
 

@@ -94,7 +94,7 @@ class BatchNormKernel<platform::CUDADeviceContext, T>
                  << "CUDNN_BN_MIN_EPSILON. Setting it to "
                  << "CUDNN_BN_MIN_EPSILON instead.";
     }
-    epsilon = std::max(epsilon, CUDNN_BN_MIN_EPSILON);
+    epsilon = fmax(epsilon, CUDNN_BN_MIN_EPSILON);
 #if CUDNN_VERSION_MIN(7, 0, 0)
     mode_ = CUDNN_BATCHNORM_SPATIAL_PERSISTENT;
 #else
@@ -320,7 +320,7 @@ class BatchNormGradKernel<platform::CUDADeviceContext, T>
                    << "CUDNN_BN_MIN_EPSILON. Setting it to "
                    << "CUDNN_BN_MIN_EPSILON instead.";
       }
-      epsilon = std::max(epsilon, CUDNN_BN_MIN_EPSILON);
+      epsilon = fmax(epsilon, CUDNN_BN_MIN_EPSILON);
 #if CUDNN_VERSION_MIN(7, 0, 0)
       mode_ = CUDNN_BATCHNORM_SPATIAL_PERSISTENT;
 #else
@@ -368,9 +368,9 @@ class BatchNormGradKernel<platform::CUDADeviceContext, T>
       const int num = x->numel();
       const int block = 512;
       int max_threads = dev_ctx.GetMaxPhysicalThreadCount();
-      const int max_blocks = std::max(max_threads / block, 1);
+      const int max_blocks = fmax(max_threads / block, 1);
       int grid1 = (num + block - 1) / block;
-      int grid2 = std::min(C, max_blocks);
+      int grid2 = fmin(C, max_blocks);
 
       if (data_layout == framework::DataLayout::kNCHW) {
         if (d_x) {

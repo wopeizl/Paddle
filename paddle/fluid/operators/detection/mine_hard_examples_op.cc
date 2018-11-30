@@ -108,9 +108,9 @@ class MineHardExamplesKernel : public framework::OpKernel<T> {
         for (int m = 0; m < prior_num; ++m) {
           if (match_indices(n, m) != -1) ++num_pos;
         }
-        neg_sel = std::min(static_cast<int>(num_pos * neg_pos_ratio), neg_sel);
+        neg_sel = fmin(static_cast<int>(num_pos * neg_pos_ratio), neg_sel);
       } else if (mining_type == MiningType::kHardExample) {
-        neg_sel = std::min(sample_size, neg_sel);
+        neg_sel = fmin(sample_size, neg_sel);
       }
 
       std::sort(loss_idx.begin(), loss_idx.end(), SortScoreDescend<size_t>);

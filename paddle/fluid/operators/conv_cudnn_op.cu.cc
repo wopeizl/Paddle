@@ -129,7 +129,7 @@ class CUDNNConvOpKernel : public framework::OpKernel<T> {
     size_t workspace_size_limit = kCONV_CUDNN_WORKSPACE_LIMIT_BYTES;
     if (FLAGS_conv_workspace_size_limit > 0 || user_workspace_size > 0) {
       int64_t max_user_size =
-          std::max(static_cast<int64_t>(FLAGS_conv_workspace_size_limit),
+          fmax(static_cast<int64_t>(FLAGS_conv_workspace_size_limit),
                    user_workspace_size);
       workspace_size_limit = max_user_size * 1024 * 1024;
     }
@@ -333,7 +333,7 @@ class CUDNNConvGradOpKernel : public framework::OpKernel<T> {
     size_t workspace_size_limit = kCONV_CUDNN_WORKSPACE_LIMIT_BYTES;
     if (FLAGS_conv_workspace_size_limit > 0 || user_workspace_size > 0) {
       int64_t max_user_size =
-          std::max(static_cast<int64_t>(FLAGS_conv_workspace_size_limit),
+          fmax(static_cast<int64_t>(FLAGS_conv_workspace_size_limit),
                    user_workspace_size);
       workspace_size_limit = max_user_size * 1024 * 1024;
     }
@@ -408,7 +408,7 @@ class CUDNNConvGradOpKernel : public framework::OpKernel<T> {
           platform::dynload::cudnnGetConvolutionBackwardDataWorkspaceSize(
               handle, cudnn_filter_desc, cudnn_output_grad_desc,
               cudnn_conv_desc, cudnn_input_desc, data_algo, &tmp_size));
-      workspace_size_in_bytes = std::max(workspace_size_in_bytes, tmp_size);
+      workspace_size_in_bytes = fmax(workspace_size_in_bytes, tmp_size);
     }
 
     if (filter_grad) {
@@ -464,7 +464,7 @@ class CUDNNConvGradOpKernel : public framework::OpKernel<T> {
           platform::dynload::cudnnGetConvolutionBackwardFilterWorkspaceSize(
               handle, cudnn_input_desc, cudnn_output_grad_desc, cudnn_conv_desc,
               cudnn_filter_desc, filter_algo, &tmp_size));
-      workspace_size_in_bytes = std::max(workspace_size_in_bytes, tmp_size);
+      workspace_size_in_bytes = fmax(workspace_size_in_bytes, tmp_size);
     }
 
     // ------------------- cudnn conv backward data ---------------------

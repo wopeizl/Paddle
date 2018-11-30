@@ -50,13 +50,13 @@ bool in_quad(T x, T y, T roi_x[], T roi_y[]) {
     T ye = roi_y[(i + 1) % 4];
     if (fabs(ys - ye) < 1e-4) {
       if (fabs(y - ys) < 1e-4 && fabs(y - ye) < 1e-4 &&
-          GT_E<T>(x, std::min(xs, xe)) && LT_E<T>(x, std::max(xs, xe))) {
+          GT_E<T>(x, fmin(xs, xe)) && LT_E<T>(x, fmax(xs, xe))) {
         return true;
       }
     } else {
       T intersec_x = (y - ys) * (xe - xs) / (ye - ys) + xs;
-      if (fabs(intersec_x - x) < 1e-4 && GT_E<T>(y, std::min(ys, ye)) &&
-          LT_E<T>(y, std::max(ys, ye))) {
+      if (fabs(intersec_x - x) < 1e-4 && GT_E<T>(y, fmin(ys, ye)) &&
+          LT_E<T>(y, fmax(ys, ye))) {
         return true;
       }
     }
@@ -71,7 +71,7 @@ bool in_quad(T x, T y, T roi_x[], T roi_y[]) {
     if (fabs(ys - ye) < 1e-4) {
       continue;
     }
-    if (LT_E<T>(y, std::min(ys, ye)) || GT<T>(y, std::max(ys, ye))) {
+    if (LT_E<T>(y, fmin(ys, ye)) || GT<T>(y, fmax(ys, ye))) {
       continue;
     }
     T intersec_x = (y - ys) * (xe - xs) / (ye - ys) + xs;
@@ -131,7 +131,7 @@ void get_transform_matrix(const int transformed_width,
   int normalized_width =
       std::round(estimated_width * (normalized_height - 1) / estimated_height) +
       1;
-  normalized_width = std::min(normalized_width, transformed_width);
+  normalized_width = fmin(normalized_width, transformed_width);
 
   T dx1 = x1 - x2;
   T dx2 = x3 - x2;

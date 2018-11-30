@@ -55,12 +55,12 @@ class Pool2dFunctor<platform::CPUDeviceContext, PoolProcess, T> {
       for (int c = 0; c < output_channels; ++c) {
         for (int ph = 0; ph < output_height; ++ph) {
           int hstart = ph * stride_height - padding_height;
-          int hend = std::min(hstart + ksize_height, input_height);
-          hstart = std::max(hstart, 0);
+          int hend = fmin(hstart + ksize_height, input_height);
+          hstart = fmax(hstart, 0);
           for (int pw = 0; pw < output_width; ++pw) {
             int wstart = pw * stride_width - padding_width;
-            int wend = std::min(wstart + ksize_width, input_width);
-            wstart = std::max(wstart, 0);
+            int wend = fmin(wstart + ksize_width, input_width);
+            wstart = fmax(wstart, 0);
 
             T ele = pool_process.initial();
             for (int h = hstart; h < hend; ++h) {
@@ -119,12 +119,12 @@ class Pool2dGradFunctor<platform::CPUDeviceContext, PoolProcess, T> {
       for (int c = 0; c < output_channels; ++c) {
         for (int ph = 0; ph < output_height; ++ph) {
           int hstart = ph * stride_height - padding_height;
-          int hend = std::min(hstart + ksize_height, input_height);
-          hstart = std::max(hstart, 0);
+          int hend = fmin(hstart + ksize_height, input_height);
+          hstart = fmax(hstart, 0);
           for (int pw = 0; pw < output_width; ++pw) {
             int wstart = pw * stride_width - padding_width;
-            int wend = std::min(wstart + ksize_width, input_width);
-            wstart = std::max(wstart, 0);
+            int wend = fmin(wstart + ksize_width, input_width);
+            wstart = fmax(wstart, 0);
             int pool_size = exclusive ? (hend - hstart) * (wend - wstart)
                                       : ksize_height * ksize_width;
             float scale = 1.0 / pool_size;
@@ -186,12 +186,12 @@ class MaxPool2dGradFunctor<platform::CPUDeviceContext, T> {
       for (int c = 0; c < output_channels; ++c) {
         for (int ph = 0; ph < output_height; ++ph) {
           int hstart = ph * stride_height - padding_height;
-          int hend = std::min(hstart + ksize_height, input_height);
-          hstart = std::max(hstart, 0);
+          int hend = fmin(hstart + ksize_height, input_height);
+          hstart = fmax(hstart, 0);
           for (int pw = 0; pw < output_width; ++pw) {
             int wstart = pw * stride_width - padding_width;
-            int wend = std::min(wstart + ksize_width, input_width);
-            wstart = std::max(wstart, 0);
+            int wend = fmin(wstart + ksize_width, input_width);
+            wstart = fmax(wstart, 0);
 
             bool stop = false;
             for (int h = hstart; h < hend && !stop; ++h) {
@@ -280,16 +280,16 @@ class Pool3dFunctor<platform::CPUDeviceContext, PoolProcess, T> {
       for (int c = 0; c < output_channels; ++c) {
         for (int pd = 0; pd < output_depth; ++pd) {
           int dstart = pd * stride_depth - padding_depth;
-          int dend = std::min(dstart + ksize_depth, input_depth);
-          dstart = std::max(dstart, 0);
+          int dend = fmin(dstart + ksize_depth, input_depth);
+          dstart = fmax(dstart, 0);
           for (int ph = 0; ph < output_height; ++ph) {
             int hstart = ph * stride_height - padding_height;
-            int hend = std::min(hstart + ksize_height, input_height);
-            hstart = std::max(hstart, 0);
+            int hend = fmin(hstart + ksize_height, input_height);
+            hstart = fmax(hstart, 0);
             for (int pw = 0; pw < output_width; ++pw) {
               int wstart = pw * stride_width - padding_width;
-              int wend = std::min(wstart + ksize_width, input_width);
-              wstart = std::max(wstart, 0);
+              int wend = fmin(wstart + ksize_width, input_width);
+              wstart = fmax(wstart, 0);
               int output_idx = (pd * output_height + ph) * output_width + pw;
               T ele = pool_process.initial();
               for (int d = dstart; d < dend; ++d) {
@@ -360,17 +360,17 @@ class Pool3dGradFunctor<platform::CPUDeviceContext, PoolProcess, T> {
       for (int c = 0; c < output_channels; ++c) {
         for (int pd = 0; pd < output_depth; ++pd) {
           int dstart = pd * stride_depth - padding_depth;
-          int dend = std::min(dstart + ksize_depth, input_depth);
-          dstart = std::max(dstart, 0);
+          int dend = fmin(dstart + ksize_depth, input_depth);
+          dstart = fmax(dstart, 0);
           for (int ph = 0; ph < output_height; ++ph) {
             int hstart = ph * stride_height - padding_height;
-            int hend = std::min(hstart + ksize_height, input_height);
-            hstart = std::max(hstart, 0);
+            int hend = fmin(hstart + ksize_height, input_height);
+            hstart = fmax(hstart, 0);
 
             for (int pw = 0; pw < output_width; ++pw) {
               int wstart = pw * stride_width - padding_width;
-              int wend = std::min(wstart + ksize_width, input_width);
-              wstart = std::max(wstart, 0);
+              int wend = fmin(wstart + ksize_width, input_width);
+              wstart = fmax(wstart, 0);
 
               int pool_size =
                   exclusive
@@ -444,16 +444,16 @@ class MaxPool3dGradFunctor<platform::CPUDeviceContext, T> {
       for (int c = 0; c < output_channels; ++c) {
         for (int pd = 0; pd < output_depth; ++pd) {
           int dstart = pd * stride_depth - padding_depth;
-          int dend = std::min(dstart + ksize_depth, input_depth);
-          dstart = std::max(dstart, 0);
+          int dend = fmin(dstart + ksize_depth, input_depth);
+          dstart = fmax(dstart, 0);
           for (int ph = 0; ph < output_height; ++ph) {
             int hstart = ph * stride_height - padding_height;
-            int hend = std::min(hstart + ksize_height, input_height);
-            hstart = std::max(hstart, 0);
+            int hend = fmin(hstart + ksize_height, input_height);
+            hstart = fmax(hstart, 0);
             for (int pw = 0; pw < output_width; ++pw) {
               int wstart = pw * stride_width - padding_width;
-              int wend = std::min(wstart + ksize_width, input_width);
-              wstart = std::max(wstart, 0);
+              int wend = fmin(wstart + ksize_width, input_width);
+              wstart = fmax(wstart, 0);
               bool stop = false;
               for (int d = dstart; d < dend && !stop; ++d) {
                 for (int h = hstart; h < hend && !stop; ++h) {
@@ -542,12 +542,12 @@ class MaxPool2dWithIndexFunctor<platform::CPUDeviceContext, T1, T2> {
       for (int c = 0; c < output_channels; ++c) {
         for (int ph = 0; ph < output_height; ++ph) {
           int hstart = ph * stride_height - padding_height;
-          int hend = std::min(hstart + ksize_height, input_height);
-          hstart = std::max(hstart, 0);
+          int hend = fmin(hstart + ksize_height, input_height);
+          hstart = fmax(hstart, 0);
           for (int pw = 0; pw < output_width; ++pw) {
             int wstart = pw * stride_width - padding_width;
-            int wend = std::min(wstart + ksize_width, input_width);
-            wstart = std::max(wstart, 0);
+            int wend = fmin(wstart + ksize_width, input_width);
+            wstart = fmax(wstart, 0);
 
             T1 ele = static_cast<T1>(-FLT_MAX);
             int index = -1;
@@ -667,16 +667,16 @@ class MaxPool3dWithIndexFunctor<platform::CPUDeviceContext, T1, T2> {
       for (int c = 0; c < output_channels; ++c) {
         for (int pd = 0; pd < output_depth; ++pd) {
           int dstart = pd * stride_depth - padding_depth;
-          int dend = std::min(dstart + ksize_depth, input_depth);
-          dstart = std::max(dstart, 0);
+          int dend = fmin(dstart + ksize_depth, input_depth);
+          dstart = fmax(dstart, 0);
           for (int ph = 0; ph < output_height; ++ph) {
             int hstart = ph * stride_height - padding_height;
-            int hend = std::min(hstart + ksize_height, input_height);
-            hstart = std::max(hstart, 0);
+            int hend = fmin(hstart + ksize_height, input_height);
+            hstart = fmax(hstart, 0);
             for (int pw = 0; pw < output_width; ++pw) {
               int wstart = pw * stride_width - padding_width;
-              int wend = std::min(wstart + ksize_width, input_width);
-              wstart = std::max(wstart, 0);
+              int wend = fmin(wstart + ksize_width, input_width);
+              wstart = fmax(wstart, 0);
 
               int output_idx = (pd * output_height + ph) * output_width + pw;
               T1 ele = static_cast<T1>(-FLT_MAX);

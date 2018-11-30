@@ -149,7 +149,7 @@ std::vector<std::vector<int>> SampleFgBgGt(
   std::uniform_real_distribution<float> uniform(0, 1);
   int fg_rois_per_im = std::floor(batch_size_per_im * fg_fraction);
   int fg_rois_this_image = fg_inds.size();
-  int fg_rois_per_this_image = std::min(fg_rois_per_im, fg_rois_this_image);
+  int fg_rois_per_this_image = fmin(fg_rois_per_im, fg_rois_this_image);
   if (use_random) {
     const int64_t fg_size = static_cast<int64_t>(fg_inds.size());
     if (fg_size > fg_rois_per_this_image) {
@@ -169,7 +169,7 @@ std::vector<std::vector<int>> SampleFgBgGt(
 
   int bg_rois_per_image = batch_size_per_im - fg_rois_per_this_image;
   int bg_rois_this_image = bg_inds.size();
-  int bg_rois_per_this_image = std::min(bg_rois_per_image, bg_rois_this_image);
+  int bg_rois_per_this_image = fmin(bg_rois_per_image, bg_rois_this_image);
   if (use_random) {
     const int64_t bg_size = static_cast<int64_t>(bg_inds.size());
     if (bg_size > bg_rois_per_this_image) {

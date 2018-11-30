@@ -47,8 +47,8 @@ class SequenceConvKernel : public framework::OpKernel<T> {
       padding_data = context.Input<Tensor>("PaddingData");
     }
 
-    int up_pad = std::max(0, -context_start);
-    int down_pad = std::max(0, context_start + context_length - 1);
+    int up_pad = fmax(0, -context_start);
+    int down_pad = fmax(0, context_start + context_length - 1);
     int sequence_width = static_cast<int>(in->dims()[1]);
 
     framework::DDim col_shape = {in->dims()[0],
@@ -91,8 +91,8 @@ class SequenceConvGradKernel : public framework::OpKernel<T> {
                       "Only support one level sequence now.");
     auto lod_g_level_0 = in->lod()[0];
 
-    int up_pad = std::max(0, -context_start);
-    int down_pad = std::max(0, context_start + context_length - 1);
+    int up_pad = fmax(0, -context_start);
+    int down_pad = fmax(0, context_start + context_length - 1);
     int sequence_width = static_cast<int>(in->dims()[1]);
 
     math::SetConstant<DeviceContext, T> set_zero;

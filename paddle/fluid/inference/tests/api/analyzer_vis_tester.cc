@@ -103,7 +103,7 @@ void profile(bool use_mkldnn = false) {
     size_t size = GetSize(outputs[0]);
     PADDLE_ENFORCE_GT(size, 0);
     float *result = static_cast<float *>(outputs[0].data.data());
-    for (size_t i = 0; i < std::min(5UL, size); i++) {
+    for (size_t i = 0; i < fmin(5UL, size); i++) {
       EXPECT_NEAR(result[i], ocr_result_data[i], 1e-3);
     }
   }

@@ -22,7 +22,7 @@ limitations under the License. */
 #include <sys/mman.h>  // for mlock and munlock
 #endif
 #include <stdlib.h>   // for malloc and free
-#include <algorithm>  // for std::max
+#include <algorithm>  // for fmax
 
 #include "gflags/gflags.h"
 #include "paddle/fluid/platform/assert.h"

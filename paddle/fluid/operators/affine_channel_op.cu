@@ -142,9 +142,9 @@ class AffineChannelGradCUDAKernel : public framework::OpKernel<T> {
 
     const int block = 1024;
     int max_threads = dev_ctx.GetMaxPhysicalThreadCount();
-    const int max_blocks = std::max(max_threads / block, 1);
+    const int max_blocks = fmax(max_threads / block, 1);
     int grid1 = (num + block - 1) / block;
-    int grid2 = std::min(C, max_blocks);
+    int grid2 = fmin(C, max_blocks);
     if (layout == framework::DataLayout::kNCHW) {
       if (dx) {
         KeAffineChannelCUDA<T, framework::DataLayout::kNCHW,

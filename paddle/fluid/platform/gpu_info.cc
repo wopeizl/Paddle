@@ -158,7 +158,7 @@ size_t GpuMaxChunkSize() {
   size_t reserving = static_cast<size_t>(0.05 * total);
   // If available less than minimum chunk size, no usable memory exists.
   available =
-      std::min(std::max(available, GpuMinChunkSize()) - GpuMinChunkSize(),
+      fmin(fmax(available, GpuMinChunkSize()) - GpuMinChunkSize(),
                total - reserving);
 
   // Reserving the rest memory for page tables, etc.

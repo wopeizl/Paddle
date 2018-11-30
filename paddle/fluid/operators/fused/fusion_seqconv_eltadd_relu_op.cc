@@ -144,8 +144,8 @@ class FusionSeqConvEltAddReluKernel : public framework::OpKernel<T> {
 
     int context_start = ctx.Attr<int>("contextStart");
     int context_length = ctx.Attr<int>("contextLength");
-    int up_pad = std::max(0, -context_start);
-    int down_pad = std::max(0, context_start + context_length - 1);
+    int up_pad = fmax(0, -context_start);
+    int down_pad = fmax(0, context_start + context_length - 1);
     // im2col
     int src_mat_w = static_cast<int>(x_dims[1]);
     int src_mat_w_sz = src_mat_w * sizeof(T);
@@ -189,8 +189,8 @@ class FusionSeqConvEltAddReluKernel : public framework::OpKernel<T> {
         dst_data = dst_data + up_pad * src_mat_w;
         int zero_sz = up_pad * src_mat_w_sz;
         int cur_src_sz = seq_len * src_mat_w_sz;
-        for (int j = 0; j < std::min(up_pad, seq_len); ++j) {
-          int copy_size = std::min(cur_src_sz, col_mat_w_sz - zero_sz);
+        for (int j = 0; j < fmin(up_pad, seq_len); ++j) {
+          int copy_size = fmin(cur_src_sz, col_mat_w_sz - zero_sz);
           std::memcpy(dst_data, src_data, copy_size);
           dst_data += (col_mat_w - src_mat_w);
           zero_sz -= src_mat_w_sz;
@@ -199,10 +199,10 @@ class FusionSeqConvEltAddReluKernel : public framework::OpKernel<T> {
         dst_data = col_data + ed * col_mat_w;
         src_data = x_data + st * src_mat_w;
         zero_sz = down_pad * src_mat_w_sz;
-        for (int j = 1; j <= std::min(down_pad, seq_len); ++j) {
-          int copy_size = std::min(cur_src_sz, col_mat_w_sz - zero_sz);
+        for (int j = 1; j <= fmin(down_pad, seq_len); ++j) {
+          int copy_size = fmin(cur_src_sz, col_mat_w_sz - zero_sz);
           std::memcpy(dst_data - (zero_sz + copy_size) / sizeof(T),
-                      src_data + std::max(seq_len - j - up_pad, 0) * src_mat_w,
+                      src_data + static_cast<int>(fmax(seq_len - j - up_pad, 0) * src_mat_w),
                       copy_size);
           dst_data -= col_mat_w;
           zero_sz -= src_mat_w_sz;

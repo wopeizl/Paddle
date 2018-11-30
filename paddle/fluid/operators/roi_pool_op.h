@@ -81,8 +81,8 @@ class CPUROIPoolOpKernel : public framework::OpKernel<T> {
       int roi_end_h = round(rois_data[3] * spatial_scale);
 
       // Force malformed ROIs to be 1x1
-      int roi_height = std::max(roi_end_h - roi_start_h + 1, 1);
-      int roi_width = std::max(roi_end_w - roi_start_w + 1, 1);
+      int roi_height = fmax(roi_end_h - roi_start_h + 1, 1);
+      int roi_width = fmax(roi_end_w - roi_start_w + 1, 1);
 
       const float bin_size_h =
           static_cast<float>(roi_height) / static_cast<float>(pooled_height);
@@ -106,10 +106,10 @@ class CPUROIPoolOpKernel : public framework::OpKernel<T> {
             int wend =
                 static_cast<int>(ceil(static_cast<float>(pw + 1) * bin_size_w));
 
-            hstart = std::min(std::max(hstart + roi_start_h, 0), height);
-            hend = std::min(std::max(hend + roi_start_h, 0), height);
-            wstart = std::min(std::max(wstart + roi_start_w, 0), width);
-            wend = std::min(std::max(wend + roi_start_w, 0), width);
+            hstart = fmin(fmax(hstart + roi_start_h, 0), height);
+            hend = fmin(fmax(hend + roi_start_h, 0), height);
+            wstart = fmin(fmax(wstart + roi_start_w, 0), width);
+            wend = fmin(fmax(wend + roi_start_w, 0), width);
 
             const int pool_index = ph * pooled_width + pw;
 

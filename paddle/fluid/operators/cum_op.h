@@ -93,8 +93,9 @@ class CumKernel : public framework::OpKernel<typename Functor::ELEMENT_TYPE> {
       std::array<bool, Dim::count> rev;
       rev.fill(false);
       rev[axis] = reverse;
-      out.reshape(dims).device(d) =
-          Functor()(x.reshape(dims).reverse(rev), axis, exclusive).reverse(rev);
+      // fix me ...
+//      out.reshape(dims).device(d) =
+//          Functor()(x.reshape(dims).reverse(rev), axis, exclusive).reverse(rev);
     }
   }
 };

@@ -115,7 +115,7 @@ class GroupNormKernel<platform::CUDADeviceContext, T>
     if (bias) bias_data = bias->data<T>();
 
     int imsize = x_dims[2] * x_dims[3];
-    int block_size = std::min(512, imsize);
+    int block_size = fmin(512, imsize);
     dim3 grid(group_size, groups, x_dims[0]);
     dim3 threads(block_size, 1, 1);
     GroupNormForwardGetMeanAndVar<T><<<grid, threads, 0, dev_ctx.stream()>>>(
@@ -265,7 +265,7 @@ class GroupNormGradKernel<platform::CUDADeviceContext, T>
     if (scale) scale_data = scale->data<T>();
 
     int imsize = x_dims[2] * x_dims[3];
-    int block_size = std::min(512, imsize);
+    int block_size = fmin(512, imsize);
     dim3 grid(group_size, groups, x_dims[0]);
     dim3 threads(block_size, 1, 1);
     GroupNormBackwardGetMeanAndVar<T><<<grid, threads, 0, dev_ctx.stream()>>>(

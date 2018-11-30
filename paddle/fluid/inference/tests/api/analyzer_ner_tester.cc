@@ -132,7 +132,7 @@ TEST(Analyzer_Chinese_ner, profile) {
     size_t size = GetSize(outputs[0]);
     PADDLE_ENFORCE_GT(size, 0);
     int64_t *result = static_cast<int64_t *>(outputs[0].data.data());
-    for (size_t i = 0; i < std::min(11UL, size); i++) {
+    for (size_t i = 0; i < fmin(11UL, size); i++) {
       EXPECT_EQ(result[i], chinese_ner_result_data[i]);
     }
   }

@@ -108,13 +108,13 @@ static std::string SummaryTensor(const PaddleTensor& tensor) {
   ss << "data[:10]\t";
   switch (tensor.dtype) {
     case PaddleDType::INT64: {
-      for (int i = 0; i < std::min(num_elems, 10); i++) {
+      for (int i = 0; i < fmin(num_elems, 10); i++) {
         ss << static_cast<int64_t*>(tensor.data.data())[i] << " ";
       }
       break;
     }
     case PaddleDType::FLOAT32:
-      for (int i = 0; i < std::min(num_elems, 10); i++) {
+      for (int i = 0; i < fmin(num_elems, 10); i++) {
         ss << static_cast<float*>(tensor.data.data())[i] << " ";
       }
       break;

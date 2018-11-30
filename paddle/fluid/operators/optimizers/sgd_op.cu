@@ -105,7 +105,7 @@ class SGDOpCUDAKernel : public framework::OpKernel<T> {
       const int kThreadsPerBlock = 256;
       int thread_x = kThreadsPerBlock;
       int max_threads = ctx.cuda_device_context().GetMaxPhysicalThreadCount();
-      int max_blocks = std::max(max_threads / kThreadsPerBlock, 1);
+      int max_blocks = fmax(max_threads / kThreadsPerBlock, 1);
 
       SparseSGDFunctorKernel<<<max_blocks, thread_x, 0,
                                ctx.cuda_device_context().stream()>>>(

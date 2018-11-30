@@ -106,7 +106,7 @@ class EditDistanceGPUKernel : public framework::OpKernel<T> {
       auto m = static_cast<int64_t>(hyp_lod[num + 1] - hyp_lod[num]);
       auto n = static_cast<int64_t>(ref_lod[num + 1] - ref_lod[num]);
       if (m == 0 || n == 0) {
-        distance = std::max(m, n);
+        distance = fmax(m, n);
         if (normalized) {
           PADDLE_ENFORCE(n > 0,
                          "The reference string (#%d) cannot be empty "

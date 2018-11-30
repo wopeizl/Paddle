@@ -446,8 +446,8 @@ class DepthwiseConvFunctor<platform::CUDADeviceContext, T> {
     T* output_data = output->mutable_data<T>(context.GetPlace());
 
     int thread = 512;
-    int blocks = std::min(std::max(thread / output_width, 1), output_height);
-    dim3 threads(std::min(output_width, thread), blocks, 1);
+    int blocks = fmin(fmax(thread / output_width, 1), output_height);
+    dim3 threads(fmin(output_width, thread), blocks, 1);
     dim3 grid(output_channels, batch_size, 1);
     int filter_multiplier = output_channels / input_channels;
 #define check_case(c_filter_multiplier, c_stride, c_filter)                  \
@@ -512,8 +512,8 @@ class DepthwiseConvInputGradFunctor<platform::CUDADeviceContext, T> {
     T* input_grad_data = input_grad->mutable_data<T>(context.GetPlace());
 
     int thread = 512;
-    int blocks = std::min(std::max(thread / input_width, 1), input_height);
-    dim3 threads(std::min(input_width, thread), blocks, 1);
+    int blocks = fmin(fmax(thread / input_width, 1), input_height);
+    dim3 threads(fmin(input_width, thread), blocks, 1);
     dim3 grid(input_channels, batch_size, 1);
     int filter_multiplier = output_channels / input_channels;
 
@@ -584,9 +584,9 @@ class DepthwiseConvFilterGradFunctor<platform::CUDADeviceContext, T> {
 
     int block_size = 512;
     int crop_output_height =
-        std::min(std::max(block_size / output_width, 1), output_height);
+        fmin(fmax(block_size / output_width, 1), output_height);
     dim3 grid(ksize_width, ksize_height, output_channels);
-    dim3 threads(std::min(output_width, block_size), crop_output_height, 1);
+    dim3 threads(fmin(output_width, block_size), crop_output_height, 1);
     int filter_multiplier = output_channels / input_channels;
 
 #define check_case(c_filter_multiplier)                                       \

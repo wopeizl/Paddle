@@ -418,11 +418,11 @@ void ParseEvents(const std::vector<std::vector<Event>>& events,
           std::string event_name;
           if (merge_thread) {
             event_name = rit->name();
-            max_name_width = std::max(max_name_width, event_name.size());
+            max_name_width = fmax(max_name_width, event_name.size());
           } else {
             event_name = "thread" + std::to_string(rit->thread_id()) + "::" +
                          rit->name();
-            max_name_width = std::max(max_name_width, event_name.size());
+            max_name_width = fmax(max_name_width, event_name.size());
           }
 
           if (event_idx.find(event_name) == event_idx.end()) {
@@ -438,10 +438,10 @@ void ParseEvents(const std::vector<std::vector<Event>>& events,
             event_items[index].total_time += event_time;
             // min time
             event_items[index].min_time =
-                std::min(event_time, event_items[index].min_time);
+                fmin(event_time, event_items[index].min_time);
             // max time
             event_items[index].max_time =
-                std::max(event_time, event_items[index].max_time);
+                fmax(event_time, event_items[index].max_time);
           }
 
           // remove the push marker from the list

@@ -42,7 +42,7 @@ static void ReadStreamByBuf(std::istream& in, size_t limit, Callback callback) {
   while (!in.eof() ||
          (limit != 0 && counter >= limit)) {  // End of file or reach limit
     actual_max =
-        limit != 0 ? std::min(limit - counter, kMaxBufSize) : kMaxBufSize;
+        limit != 0 ? fmin(limit - counter, kMaxBufSize) : kMaxBufSize;
     in.read(buf, actual_max);
     actual_size = in.gcount();
     if (actual_size == 0) {

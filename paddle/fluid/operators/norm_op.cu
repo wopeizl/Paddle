@@ -76,8 +76,8 @@ class NormCUDAKernel : public framework::OpKernel<T> {
 
     const int block = 512;
     int max_threads = dev_ctx.GetMaxPhysicalThreadCount();
-    const int max_blocks = std::max(max_threads / block, 1);
-    int grid = std::min(max_blocks, pre * post);
+    const int max_blocks = fmax(max_threads / block, 1);
+    int grid = fmin(max_blocks, pre * post);
     Normalize<T, block><<<grid, block, 0, dev_ctx.stream()>>>(x, pre, n, post,
                                                               eps, y, norm);
   }
@@ -142,8 +142,8 @@ class NormGradCUDAKernel : public framework::OpKernel<T> {
 
     const int block = 512;
     int max_threads = dev_ctx.GetMaxPhysicalThreadCount();
-    const int max_blocks = std::max(max_threads / block, 1);
-    int grid = std::min(max_blocks, pre * post);
+    const int max_blocks = fmax(max_threads / block, 1);
+    int grid = fmin(max_blocks, pre * post);
     NormalizeGradient<T, block><<<grid, block, 0, dev_ctx.stream()>>>(
         x, x_norm, dy, pre, n, post, dx);
   }

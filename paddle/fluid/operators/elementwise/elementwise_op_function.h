@@ -418,7 +418,7 @@ static void ElemwiseGradBroadcast1CUDA(cudaStream_t stream, const T *x,
                                        const T *y, const T *out, const T *dout,
                                        int h, int w, DX_OP dx_op, DY_OP dy_op,
                                        T *dx, T *dy) {
-  int block_size = std::min(ELEMWISE_MAX_BLOCK_DIM, h);
+  int block_size = fmin(ELEMWISE_MAX_BLOCK_DIM, h);
   int gird_size = w;
   ElemwiseGradBroadcast1CUDAKernel<<<gird_size, block_size, 0, stream>>>(
       x, y, out, dout, h, w, dx_op, dy_op, dx, dy);
@@ -495,7 +495,7 @@ static void ElemwiseGradBroadcast2CUDA(cudaStream_t stream, const T *x,
                                        const T *y, const T *out, const T *dout,
                                        int pre, int n, int post, DX_OP dx_op,
                                        DY_OP dy_op, T *dx, T *dy) {
-  int block_size = std::min(ELEMWISE_MAX_BLOCK_DIM, pre * post);
+  int block_size = fmin(ELEMWISE_MAX_BLOCK_DIM, pre * post);
   int gird_size = n;
   ElemwiseGradBroadcast2CUDAKernel<<<gird_size, block_size, 0, stream>>>(
       x, y, out, dout, pre, n, post, dx_op, dy_op, dx, dy);
@@ -857,7 +857,7 @@ static void FusedElemwiseAndActBroadcast1CUDA(cudaStream_t stream, const T *x,
                                               CompoundFunctor compound_functor,
                                               int h, int w, T *out,
                                               T *intermediate_out) {
-  int block_size = std::min(ELEMWISE_MAX_BLOCK_DIM, h);
+  int block_size = fmin(ELEMWISE_MAX_BLOCK_DIM, h);
   int gird_size = w;
   FusedElemwiseAndActBroadcast1CUDAKernel<
       T, CompoundFunctor, BcastY, KeepIntermediateOut,
@@ -914,7 +914,7 @@ static void FusedElemwiseAndActBroadcast2CUDA(cudaStream_t stream, const T *x,
                                               int post,
                                               CompoundFunctor compound_functor,
                                               T *out, T *intermediate_out) {
-  int block_size = std::min(ELEMWISE_MAX_BLOCK_DIM, pre * post);
+  int block_size = fmin(ELEMWISE_MAX_BLOCK_DIM, pre * post);
   int gird_size = n;
 
   FusedElemwiseAndActBroadcast2CUDAKernel<
@@ -1332,7 +1332,7 @@ static void FusedElemwiseAndActGradBroadcast1CUDA(
     cudaStream_t stream, const T *x, const T *y, const T *intermediate_out,
     const T *out, const T *dout, int h, int w, DX_OP dx_op, DY_OP dy_op,
     DIntermediate_OP dintermediate_op, T *dx, T *dy, T *d_intermediate) {
-  int block_size = std::min(ELEMWISE_MAX_BLOCK_DIM, h);
+  int block_size = fmin(ELEMWISE_MAX_BLOCK_DIM, h);
   int gird_size = w;
   FusedElemwiseAndActGradBroadcast1CUDAKernel<
       T, DX_OP, DY_OP, DIntermediate_OP, UseIntermediateOut, BcastY,
@@ -1447,7 +1447,7 @@ static void FusedElemwiseAndActGradBroadcast2CUDA(
     const T *out, const T *dout, int pre, int n, int post, DX_OP dx_op,
     DY_OP dy_op, DIntermediate_OP dintermediate_op, T *dx, T *dy,
     T *dintermediate) {
-  int block_size = std::min(ELEMWISE_MAX_BLOCK_DIM, pre * post);
+  int block_size = fmin(ELEMWISE_MAX_BLOCK_DIM, pre * post);
   int gird_size = n;
   FusedElemwiseAndActGradBroadcast2CUDAKernel<
       T, DX_OP, DY_OP, DIntermediate_OP, UseIntermediateOut, BcastY,

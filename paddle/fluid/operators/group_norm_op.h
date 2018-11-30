@@ -64,7 +64,7 @@ class GroupNormKernel : public framework::OpKernel<T> {
     for (int bid = 0; bid < x_dims[0]; bid++)
       for (int gid = 0; gid < groups; gid++) {
         T x_mean = 0, x_var = 0;
-        int number = std::min(group_size,
+        int number = fmin(group_size,
                               static_cast<int>(x_dims[1] - gid * group_size));
         auto* tmp = iter_x_data;
         for (int cid = 0; cid < number; cid++) {
@@ -150,7 +150,7 @@ class GroupNormGradKernel : public framework::OpKernel<T> {
         T x_mean = mean_data[bid * groups + gid];
         T x_var = var_data[bid * groups + gid];
         T var_inv = 1.0 / sqrt(x_var + epsilon);
-        int number = std::min(group_size,
+        int number = fmin(group_size,
                               static_cast<int>(x_dims[1] - gid * group_size));
         auto* tmp = iter_x_data;
         auto* tmp2 = iter_d_x_data;

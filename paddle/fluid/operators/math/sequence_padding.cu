@@ -90,7 +90,7 @@ class PaddingLoDTensorFunctor<platform::CUDADeviceContext, T> {
      * and at least 8 elements for each thread.
      */
     size_t block_dim_x =
-        std::min(((((step_width + 7) >> 3) + 31) >> 5) << 5, kBlockSize);
+        fmin(((((step_width + 7) >> 3) + 31) >> 5) << 5, kBlockSize);
     size_t block_dim_y = kBlockSize / block_dim_x;
     dim3 threads(block_dim_x, block_dim_y);
 
@@ -142,7 +142,7 @@ class UnpaddingLoDTensorFunctor<platform::CUDADeviceContext, T> {
      * and at least 8 elements for each thread.
      */
     size_t block_dim_x =
-        std::min(((((step_width + 7) >> 3) + 31) >> 5) << 5, kBlockSize);
+        fmin(((((step_width + 7) >> 3) + 31) >> 5) << 5, kBlockSize);
     size_t block_dim_y = kBlockSize / block_dim_x;
     dim3 threads(block_dim_x, block_dim_y);
 

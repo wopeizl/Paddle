@@ -105,11 +105,11 @@ static inline void BoxCoder(const platform::DeviceContext &ctx,
       bbox_center_y = variances_data[i * len + 1] *
                           bbox_deltas_data[i * len + 1] * anchor_height +
                       anchor_center_y;
-      bbox_width = std::exp(std::min<T>(variances_data[i * len + 2] *
+      bbox_width = std::exp(fmin<T>(variances_data[i * len + 2] *
                                             bbox_deltas_data[i * len + 2],
                                         kBBoxClipDefault)) *
                    anchor_width;
-      bbox_height = std::exp(std::min<T>(variances_data[i * len + 3] *
+      bbox_height = std::exp(fmin<T>(variances_data[i * len + 3] *
                                              bbox_deltas_data[i * len + 3],
                                          kBBoxClipDefault)) *
                     anchor_height;
@@ -118,10 +118,10 @@ static inline void BoxCoder(const platform::DeviceContext &ctx,
           bbox_deltas_data[i * len] * anchor_width + anchor_center_x;
       bbox_center_y =
           bbox_deltas_data[i * len + 1] * anchor_height + anchor_center_y;
-      bbox_width = std::exp(std::min<T>(bbox_deltas_data[i * len + 2],
+      bbox_width = std::exp(fmin<T>(bbox_deltas_data[i * len + 2],
                                         kBBoxClipDefault)) *
                    anchor_width;
-      bbox_height = std::exp(std::min<T>(bbox_deltas_data[i * len + 3],
+      bbox_height = std::exp(fmin<T>(bbox_deltas_data[i * len + 3],
                                          kBBoxClipDefault)) *
                     anchor_height;
     }
@@ -143,16 +143,16 @@ static inline void ClipTiledBoxes(const platform::DeviceContext &ctx,
   for (int64_t i = 0; i < boxes->numel(); ++i) {
     if (i % 4 == 0) {
       boxes_data[i] =
-          std::max(std::min(boxes_data[i], im_info_data[1] - 1), zero);
+          fmax(fmin(boxes_data[i], im_info_data[1] - 1), zero);
     } else if (i % 4 == 1) {
       boxes_data[i] =
-          std::max(std::min(boxes_data[i], im_info_data[0] - 1), zero);
+          fmax(fmin(boxes_data[i], im_info_data[0] - 1), zero);
     } else if (i % 4 == 2) {
       boxes_data[i] =
-          std::max(std::min(boxes_data[i], im_info_data[1] - 1), zero);
+          fmax(fmin(boxes_data[i], im_info_data[1] - 1), zero);
     } else {
       boxes_data[i] =
-          std::max(std::min(boxes_data[i], im_info_data[0] - 1), zero);
+          fmax(fmin(boxes_data[i], im_info_data[0] - 1), zero);
     }
   }
 }
@@ -165,7 +165,7 @@ static inline void FilterBoxes(const platform::DeviceContext &ctx,
   T *boxes_data = boxes->mutable_data<T>(ctx.GetPlace());
   T im_scale = im_info_data[2];
   keep->Resize({boxes->dims()[0]});
-  min_size = std::max(min_size, 1.0f);
+  min_size = fmax(min_size, 1.0f);
   int *keep_data = keep->mutable_data<int>(ctx.GetPlace());
 
   int keep_len = 0;
@@ -226,12 +226,12 @@ static inline T JaccardOverlap(const T *box1, const T *box2, bool normalized) {
       box2[3] < box1[1]) {
     return static_cast<T>(0.);
   } else {
-    const T inter_xmin = std::max(box1[0], box2[0]);
-    const T inter_ymin = std::max(box1[1], box2[1]);
-    const T inter_xmax = std::min(box1[2], box2[2]);
-    const T inter_ymax = std::min(box1[3], box2[3]);
-    const T inter_w = std::max(T(0), inter_xmax - inter_xmin + 1);
-    const T inter_h = std::max(T(0), inter_ymax - inter_ymin + 1);
+    const T inter_xmin = fmax(box1[0], box2[0]);
+    const T inter_ymin = fmax(box1[1], box2[1]);
+    const T inter_xmax = fmin(box1[2], box2[2]);
+    const T inter_ymax = fmin(box1[3], box2[3]);
+    const T inter_w = fmax(T(0), inter_xmax - inter_xmin + 1);
+    const T inter_h = fmax(T(0), inter_ymax - inter_ymin + 1);
     const T inter_area = inter_w * inter_h;
     const T bbox1_area = BBoxArea<T>(box1, normalized);
     const T bbox2_area = BBoxArea<T>(box2, normalized);

@@ -24,7 +24,7 @@ limitations under the License. */
 #include <sys/types.h>
 
 #elif defined(_WIN32)
-#define NOMINMAX  // msvc max/min macro conflict with std::min/max
+#define NOMINMAX  // msvc max/min macro conflict with fmin/max
 #include <windows.h>
 #else
 #include <unistd.h>
@@ -101,7 +101,7 @@ size_t CpuMinChunkSize() {
 size_t CpuMaxChunkSize() {
   // Allow to allocate the maximum chunk size is roughly 3% of CPU memory,
   // or the initial_cpu_memory_in_mb.
-  return std::min(
+  return fmin(
       static_cast<size_t>(CpuMaxAllocSize() / 32),
       static_cast<size_t>(FLAGS_initial_cpu_memory_in_mb * 1 << 20));
 }

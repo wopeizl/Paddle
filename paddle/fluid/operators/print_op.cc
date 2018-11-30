@@ -102,7 +102,7 @@ struct Formater {
     auto *d = reinterpret_cast<T *>(data);
     CLOG << "\tdata: ";
     if (summarize != -1) {
-      summarize = std::min(size, (size_t)summarize);
+      summarize = fmin(size, (size_t)summarize);
       for (int i = 0; i < summarize; i++) {
         CLOG << d[i] << ",";
       }

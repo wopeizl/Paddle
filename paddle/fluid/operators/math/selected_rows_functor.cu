@@ -281,8 +281,13 @@ struct MergeAdd<platform::CUDADeviceContext, T> {
     }
 
     framework::SelectedRows& out = *output;
-    std::set<int64_t> row_set(input_rows.begin(), input_rows.end());
-    std::vector<int64_t> merge_rows_cpu(row_set.begin(), row_set.end());
+    std::vector<int64_t> merge_rows_cpu;
+    // fix me, to avoid the <= compare which lead to
+    for (auto iter = input_rows.begin(); iter != input_rows.end(); ++iter) {
+        if(std::find(merge_rows_cpu.begin(), merge_rows_cpu.end(), *iter) == merge_rows_cpu.end()) {
+            merge_rows_cpu.push_back(*iter);
+        }
+    }
     framework::Vector<int64_t> merge_rows(merge_rows_cpu);
 
     auto input_width = input.value().dims()[1];
@@ -331,7 +336,7 @@ struct MergeAdd<platform::CUDADeviceContext, T> {
     auto input_width = has_value_input->value().dims()[1];
     auto input_height = has_value_input->height();
     framework::SelectedRows& out = *output;
-    std::set<int64_t> merged_row_set;
+    std::vector<int64_t> merge_rows_cpu;
     for (auto* input : inputs) {
       if (input->rows().size() == 0) {
         continue;
@@ -341,10 +346,13 @@ struct MergeAdd<platform::CUDADeviceContext, T> {
                         "dimension except for the first one");
       PADDLE_ENFORCE_EQ(input_height, input->height(),
                         "all input should have same height");
-      merged_row_set.insert(input->rows().begin(), input->rows().end());
+      // fix me ...
+      for (auto iter = input->rows().begin(); iter != input->rows().end(); ++iter) {
+        if(std::find(merge_rows_cpu.begin(), merge_rows_cpu.end(), *iter) == merge_rows_cpu.end()) {
+          merge_rows_cpu.push_back(*iter);
+        }
+      }
     }
-    std::vector<int64_t> merge_rows_cpu(merged_row_set.begin(),
-                                        merged_row_set.end());
     framework::Vector<int64_t> merge_rows(merge_rows_cpu);
 
     out.set_rows(merge_rows);

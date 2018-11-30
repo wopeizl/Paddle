@@ -50,8 +50,8 @@ class SequenceConvOp : public framework::OperatorWithKernel {
           ctx->HasInput("PaddingData"),
           "Input(PaddingData) of SequenceConvOp should not be null.");
       framework::DDim padding_dim = ctx->GetInputDim("PaddingData");
-      int up_pad = std::max(0, -context_start);
-      int down_pad = std::max(0, context_start + context_length - 1);
+      int up_pad = fmax(0, -context_start);
+      int down_pad = fmax(0, context_start + context_length - 1);
       int total_pad = up_pad + down_pad;
       int input_width = static_cast<int>(in_dims[1]);
 

@@ -120,10 +120,10 @@ static inline T JaccardOverlap(const T* box1, const T* box2,
       box2[3] < box1[1]) {
     return static_cast<T>(0.);
   } else {
-    const T inter_xmin = std::max(box1[0], box2[0]);
-    const T inter_ymin = std::max(box1[1], box2[1]);
-    const T inter_xmax = std::min(box1[2], box2[2]);
-    const T inter_ymax = std::min(box1[3], box2[3]);
+    const T inter_xmin = fmax(box1[0], box2[0]);
+    const T inter_ymin = fmax(box1[1], box2[1]);
+    const T inter_xmax = fmin(box1[2], box2[2]);
+    const T inter_ymax = fmin(box1[3], box2[3]);
     const T inter_w = inter_xmax - inter_xmin;
     const T inter_h = inter_ymax - inter_ymin;
     const T inter_area = inter_w * inter_h;

@@ -98,7 +98,7 @@ class SimilarityFocusKernel : public framework::OpKernel<T> {
             for (int j = 0; j < dim[1]; ++j) {
               out_data[compute_index(dim, i, j, idx2, idx3)] = 1;
             }
-            if (tag_num == std::min(dim[2], dim[3])) {
+            if (tag_num == fmin(dim[2], dim[3])) {
               break;
             }
           }
@@ -125,7 +125,7 @@ class SimilarityFocusKernel : public framework::OpKernel<T> {
             for (int j = 0; j < dim[2]; ++j) {
               out_data[compute_index(dim, i, idx1, j, idx3)] = 1;
             }
-            if (tag_num == std::min(dim[1], dim[3])) {
+            if (tag_num == fmin(dim[1], dim[3])) {
               break;
             }
           }
@@ -152,7 +152,7 @@ class SimilarityFocusKernel : public framework::OpKernel<T> {
             for (int j = 0; j < dim[3]; ++j) {
               out_data[compute_index(dim, i, idx1, idx2, j)] = 1;
             }
-            if (tag_num == std::min(dim[1], dim[2])) {
+            if (tag_num == fmin(dim[1], dim[2])) {
               break;
             }
           }

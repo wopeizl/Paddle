@@ -304,7 +304,7 @@ std::string LoDTensorSummary(const framework::LoDTensor &tensor) {
   ss << "]\n";
 
   ss << "data: ";
-  for (int i = 0; i < std::min(20, size); i++) {
+  for (int i = 0; i < fmin(20, size); i++) {
     ss << tensor.data<T>()[i] << " ";
   }
   ss << "\n";

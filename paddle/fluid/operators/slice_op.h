@@ -73,7 +73,7 @@ class SliceKernel : public framework::OpKernel<T> {
       if (start < 0) {
         start = (start + in_dims[axes[i]]);
       }
-      start = std::max(start, 0);
+      start = fmax(start, 0);
       offsets[axes[i]] = start;
     }
     auto in_t =
@@ -142,7 +142,7 @@ class SliceGradKernel : public framework::OpKernel<T> {
       if (start < 0) {
         start = (start + in_dims[axes[i]]);
       }
-      start = std::max(start, 0);
+      start = fmax(start, 0);
       offsets[axes[i]] = start;
     }
     Eigen::array<std::pair<int, int>, D> paddings;
