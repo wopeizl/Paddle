@@ -25,7 +25,6 @@ limitations under the License. */
 
 #if defined(_WIN32)
 #include <intrin.h>
-#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #endif  // _WIN32
 

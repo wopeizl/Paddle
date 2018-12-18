@@ -37,7 +37,10 @@
 #define GOOGLE_GLOG_DLL_DECL
 #include <io.h>  // _popen, _pclose
 #include <stdio.h>
+#ifdef _WINSOCKAPI_
+/* Prevent inclusion of winsock.h in windows.h */
 #define WIN32_LEAN_AND_MEAN
+#endif
 #include <windows.h>
 #include <numeric>  // std::accumulate in msvc
 #ifndef S_ISDIR     // windows port for sys/stat.h
@@ -61,6 +64,26 @@ static void *dlopen(const char *filename, int flag) {
     throw std::runtime_error(file_name + " not found.");
   }
   return reinterpret_cast<void *>(hModule);
+}
+
+static int gettimeofday(struct timeval *tp, void *tzp) {
+  time_t clock;
+  struct tm tm;
+  SYSTEMTIME wtm;
+
+  GetLocalTime(&wtm);
+  tm.tm_year = wtm.wYear - 1900;
+  tm.tm_mon = wtm.wMonth - 1;
+  tm.tm_mday = wtm.wDay;
+  tm.tm_hour = wtm.wHour;
+  tm.tm_min = wtm.wMinute;
+  tm.tm_sec = wtm.wSecond;
+  tm.tm_isdst = -1;
+  clock = mktime(&tm);
+  tp->tv_sec = clock;
+  tp->tv_usec = wtm.wMilliseconds * 1000;
+
+  return (0);
 }
 #endif  // !_WIN32
 
