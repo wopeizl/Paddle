@@ -109,6 +109,7 @@ else()
   set(MATH_LIB ${PADDLE_LIB}/third_party/install/openblas/lib/libopenblas${CMAKE_STATIC_LIBRARY_SUFFIX})
 endif()
 
+# Note: libpaddle_inference_api.so/a must put before libpaddle_fluid.so/a
 if(WITH_STATIC_LIB)
   set(DEPS ${PADDLE_LIB}/paddle/lib/libpaddle_fluid${CMAKE_STATIC_LIBRARY_SUFFIX})
 else()
