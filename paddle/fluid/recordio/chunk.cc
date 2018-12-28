@@ -20,7 +20,6 @@
 #include <sstream>
 
 #include "paddle/fluid/platform/enforce.h"
-#include "paddle/fluid/platform/port.h"
 #include "snappystream.hpp"
 
 namespace paddle {
