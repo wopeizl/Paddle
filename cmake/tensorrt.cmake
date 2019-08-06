@@ -2,14 +2,25 @@ if(NOT WITH_GPU)
     return()
 endif()
 
-set(TENSORRT_ROOT "/usr" CACHE PATH "TENSORRT ROOT")
+if(WIN32)
+    if("${TENSORRT_ROOT}" STREQUAL "")
+        message(FATAL_ERROR "Please specify the TensorRT root path: TENSORRT_ROOT.")
+    endif()
+    set(TR_INFER_LIB nvinfer.lib)
+    set(TR_INFER_RT nvinfer.dll)
+else()
+    set(TENSORRT_ROOT "/usr" CACHE PATH "TENSORRT ROOT")
+    set(TR_INFER_LIB libnvinfer.a)
+    set(TR_INFER_RT libnvinfer.so)
+endif()
+
 find_path(TENSORRT_INCLUDE_DIR NvInfer.h
     PATHS ${TENSORRT_ROOT} ${TENSORRT_ROOT}/include
     $ENV{TENSORRT_ROOT} $ENV{TENSORRT_ROOT}/include
     NO_DEFAULT_PATH
 )
 
-find_library(TENSORRT_LIBRARY NAMES libnvinfer.so libnvinfer.a
+find_library(TENSORRT_LIBRARY NAMES ${TR_INFER_LIB} ${TR_INFER_RT}
     PATHS ${TENSORRT_ROOT} ${TENSORRT_ROOT}/lib
     $ENV{TENSORRT_ROOT} $ENV{TENSORRT_ROOT}/lib
     NO_DEFAULT_PATH
