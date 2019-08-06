@@ -4,14 +4,16 @@ endif()
 
 if(WIN32)
     if("${TENSORRT_ROOT}" STREQUAL "")
-        message(FATAL_ERROR "Please specify the TensorRT root path: TENSORRT_ROOT.")
+        message(WARNING "Please specify the TensorRT root path: TENSORRT_ROOT.")
     endif()
     set(TR_INFER_LIB nvinfer.lib)
     set(TR_INFER_RT nvinfer.dll)
+    set(TR_INFER_PLUGIN_RT nvinfer_plugin.dll)
 else()
     set(TENSORRT_ROOT "/usr" CACHE PATH "TENSORRT ROOT")
     set(TR_INFER_LIB libnvinfer.a)
     set(TR_INFER_RT libnvinfer.so)
+    set(TR_INFER_PLUGIN_RT libnvinfer_plugin.so)
 endif()
 
 find_path(TENSORRT_INCLUDE_DIR NvInfer.h
