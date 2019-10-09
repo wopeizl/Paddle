@@ -191,7 +191,6 @@ __global__ void GPUPRROIPoolBackward(
         [](const T x, const T y) { return min(x, y); });
   }
 }
-}
 
 template <typename T>
 class GPUPRROIPoolOpKernel : public framework::OpKernel<T> {
@@ -260,8 +259,6 @@ class GPUPRROIPoolGradOpKernel : public framework::OpKernel<T> {
     auto* in = ctx.Input<Tensor>("X");
     auto* rois = ctx.Input<LoDTensor>("ROIs");
     auto* out = ctx.Input<framework::Tensor>("Out");
-    auto* input_roi_grad =
-        ctx.Output<framework::Tensor>(framework::GradVarName("ROIs"));
 
     auto* output_grad = ctx.Input<Tensor>(framework::GradVarName("Out"));
     auto* input_grad = ctx.Output<Tensor>(framework::GradVarName("X"));
