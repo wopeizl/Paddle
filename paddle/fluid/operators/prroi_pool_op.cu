@@ -119,7 +119,8 @@ __global__ void GPUPRROIPoolBackward(
     const T* output_grad_data, const float spatial_scale,
     const int input_channels, const int height, const int width,
     const int output_channels, const int pooled_height, const int pooled_width,
-    const int* rois_batch_id_data, T* input_grad_data, T* input_roi_grad_data) {
+    const int* rois_batch_id_data, T* input_grad_data, const T* out_data,
+    T* input_roi_grad_data) {
   int index = blockIdx.x * blockDim.x + threadIdx.x;
   int offset = blockDim.x * gridDim.x;
   for (int i = index; i < nthreads; i += offset) {
@@ -298,6 +299,8 @@ class GPUPRROIPoolGradOpKernel : public framework::OpKernel<T> {
       input_grad->mutable_data<T>(ctx.GetPlace());
       math::SetConstant<DeviceContext, T> set_zero;
       set_zero(ctx.cuda_device_context(), input_grad, static_cast<T>(0));
+      input_roi_grad->mutable_data<T>(ctx.GetPlace());
+      set_zero(ctx.cuda_device_context(), input_roi_grad, static_cast<T>(0));
 
       int output_grad_size = output_grad->numel();
       int blocks = NumBlocks(output_grad_size);
